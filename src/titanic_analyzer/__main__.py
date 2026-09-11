@@ -2,11 +2,11 @@
 
 from pathlib import Path
 
-from titanic_analyzer import load_titanic_data
+from titanic_analyzer import load_titanic_data, preprocess_data
 
 
 def main() -> None:
-    """Run a basic demonstration of the Titanic Survival Analyzer."""
+    """Run a basic demonstration of Titanic data preprocessing."""
     data_path = Path("data/titanic.csv")
 
     print("Titanic Survival Analyzer")
@@ -19,9 +19,15 @@ def main() -> None:
         print(f"Error: {error}")
         return
 
+    cleaned = preprocess_data(dataframe)
+
     print(f"Dataset loaded successfully: {data_path}")
-    print(f"Passengers: {len(dataframe)}")
-    print(f"Columns: {len(dataframe.columns)}")
+    print(f"Passengers: {len(cleaned)}")
+    print(f"Columns: {len(cleaned.columns)}")
+    print()
+
+    print("Missing values after preprocessing:")
+    print(cleaned[["Age", "Cabin", "Embarked"]].isna().sum())
 
 
 if __name__ == "__main__":

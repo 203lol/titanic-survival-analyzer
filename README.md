@@ -30,3 +30,25 @@ Clone the repository and install the package in editable mode:
 
 ```bash
 uv pip install -e .
+## Data Preprocessing
+
+The package includes a preprocessing pipeline for cleaning Titanic passenger
+data before analysis.
+
+Current preprocessing steps include:
+
+- Filling missing `Age` values using the median age
+- Filling missing `Embarked` values using the most frequent embarkation port
+- Replacing missing `Cabin` values with `Unknown`
+- Normalizing values in the `Sex` column
+- Normalizing embarkation codes
+
+Example:
+
+```python
+from titanic_analyzer import load_titanic_data, preprocess_data
+
+data = load_titanic_data("data/titanic.csv")
+clean_data = preprocess_data(data)
+
+print(clean_data.isna().sum())
