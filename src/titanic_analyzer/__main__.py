@@ -2,15 +2,30 @@
 
 from pathlib import Path
 
-from titanic_analyzer import load_titanic_data, preprocess_data
+from titanic_analyzer import (
+    SurvivalAnalyzer,
+    load_titanic_data,
+    preprocess_data,
+)
+
+
+def print_percentage_series(title: str, series) -> None:
+    """Print a percentage series in a readable format."""
+    print(title)
+    print("-" * len(title))
+
+    for label, value in series.items():
+        print(f"{label}: {value:.2f}%")
+
+    print()
 
 
 def main() -> None:
-    """Run a basic demonstration of Titanic data preprocessing."""
+    """Run a basic Titanic survival analysis."""
     data_path = Path("data/titanic.csv")
 
     print("Titanic Survival Analyzer")
-    print("Version 0.1.0")
+    print("=========================")
     print()
 
     try:
@@ -20,14 +35,37 @@ def main() -> None:
         return
 
     cleaned = preprocess_data(dataframe)
+    analyzer = SurvivalAnalyzer(cleaned)
 
-    print(f"Dataset loaded successfully: {data_path}")
-    print(f"Passengers: {len(cleaned)}")
-    print(f"Columns: {len(cleaned.columns)}")
+    summary = analyzer.dataset_summary()
+
+    print("Dataset Summary")
+    print("---------------")
+    print(f"Passengers: {summary['passengers']}")
+    print(f"Survivors: {summary['survivors']}")
+    print(f"Deaths: {summary['deaths']}")
+    print(f"Overall survival rate: {summary['survival_rate']:.2f}%")
     print()
 
-    print("Missing values after preprocessing:")
-    print(cleaned[["Age", "Cabin", "Embarked"]].isna().sum())
+    print_percentage_series(
+        "Survival by Sex",
+        analyzer.survival_by_sex(),
+    )
+
+    print_percentage_series(
+        "Survival by Passenger Class",
+        analyzer.survival_by_class(),
+    )
+
+    print_percentage_series(
+        "Survival by Embarkation Port",
+        analyzer.survival_by_embarkation(),
+    )
+
+    print_percentage_series(
+        "Survival by Age Group",
+        analyzer.survival_by_age_group(),
+    )
 
 
 if __name__ == "__main__":
