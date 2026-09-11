@@ -4,6 +4,7 @@ from pathlib import Path
 
 from titanic_analyzer import (
     SurvivalAnalyzer,
+    engineer_features,
     load_titanic_data,
     preprocess_data,
 )
@@ -35,8 +36,9 @@ def main() -> None:
         return
 
     cleaned = preprocess_data(dataframe)
-    analyzer = SurvivalAnalyzer(cleaned)
+    featured = engineer_features(cleaned)
 
+    analyzer = SurvivalAnalyzer(featured)
     summary = analyzer.dataset_summary()
 
     print("Dataset Summary")
@@ -45,6 +47,12 @@ def main() -> None:
     print(f"Survivors: {summary['survivors']}")
     print(f"Deaths: {summary['deaths']}")
     print(f"Overall survival rate: {summary['survival_rate']:.2f}%")
+    print()
+
+    print("Feature Engineering")
+    print("-------------------")
+    print("Added features:")
+    print("FamilySize, IsAlone, Title, AgeGroup, Deck, FarePerPerson")
     print()
 
     print_percentage_series(
