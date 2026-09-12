@@ -77,3 +77,43 @@ print(
 ```
 
 Feature engineering provides additional information about family structure, passenger demographics, cabin location, and ticket cost that can later be used for survival prediction.
+
+## Data Visualization
+
+The package can generate visualizations of important patterns in the Titanic dataset. All plots are saved as PNG files so that they can be viewed later or included in reports.
+
+Available visualizations include:
+
+* Survival rate by sex
+* Survival rate by passenger class
+* Passenger age distribution
+* Passenger fare distribution
+* Survival rate by family size
+
+Example:
+
+```python
+from titanic_analyzer import (
+    engineer_features,
+    generate_all_plots,
+    load_titanic_data,
+    preprocess_data,
+)
+
+data = load_titanic_data("data/titanic.csv")
+data = preprocess_data(data)
+data = engineer_features(data)
+
+plot_paths = generate_all_plots(data)
+
+for path in plot_paths:
+    print(path)
+```
+
+By default, the generated plots are saved in:
+
+```text
+outputs/plots/
+```
+
+The generated PNG files can be used to visually explore relationships between passenger characteristics and survival outcomes.

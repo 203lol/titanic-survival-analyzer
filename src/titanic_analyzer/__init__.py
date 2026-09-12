@@ -25,6 +25,14 @@ from titanic_analyzer.validation import (
     DatasetValidationError,
     validate_titanic_data,
 )
+from titanic_analyzer.visualization import (
+    generate_all_plots,
+    plot_age_distribution,
+    plot_fare_distribution,
+    plot_survival_by_class,
+    plot_survival_by_family_size,
+    plot_survival_by_sex,
+)
 
 __version__ = "0.1.0"
 
@@ -41,7 +49,13 @@ __all__ = [
     "fill_missing_age",
     "fill_missing_cabin",
     "fill_missing_embarked",
+    "generate_all_plots",
     "load_titanic_data",
+    "plot_age_distribution",
+    "plot_fare_distribution",
+    "plot_survival_by_class",
+    "plot_survival_by_family_size",
+    "plot_survival_by_sex",
     "preprocess_data",
     "validate_titanic_data",
 ]

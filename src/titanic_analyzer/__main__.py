@@ -5,6 +5,7 @@ from pathlib import Path
 from titanic_analyzer import (
     SurvivalAnalyzer,
     engineer_features,
+    generate_all_plots,
     load_titanic_data,
     preprocess_data,
 )
@@ -74,6 +75,17 @@ def main() -> None:
         "Survival by Age Group",
         analyzer.survival_by_age_group(),
     )
+
+    plot_paths = generate_all_plots(featured)
+
+    print("Visualizations")
+    print("--------------")
+    print("Generated plot files:")
+
+    for path in plot_paths:
+        print(f"- {path}")
+
+    print()
 
 
 if __name__ == "__main__":
