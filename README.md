@@ -117,3 +117,42 @@ outputs/plots/
 ```
 
 The generated PNG files can be used to visually explore relationships between passenger characteristics and survival outcomes.
+## Logistic Regression Model
+
+The package includes a Logistic Regression model for predicting Titanic passenger survival.
+
+The machine-learning pipeline performs both preprocessing and model training. Numeric features are standardized, while categorical features are converted using one-hot encoding.
+
+The model currently uses the following features:
+
+* `Age`
+* `Fare`
+* `FamilySize`
+* `IsAlone`
+* `FarePerPerson`
+* `Pclass`
+* `Sex`
+* `Embarked`
+* `Title`
+* `Deck`
+
+Example:
+
+```python
+from titanic_analyzer import (
+    engineer_features,
+    load_titanic_data,
+    preprocess_data,
+    train_logistic_regression,
+)
+
+data = load_titanic_data("data/titanic.csv")
+data = preprocess_data(data)
+data = engineer_features(data)
+
+result = train_logistic_regression(data)
+
+print(f"Accuracy: {result.accuracy:.3f}")
+```
+
+The dataset is divided into training and test subsets using a stratified split so that the survival-class distribution is preserved.

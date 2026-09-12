@@ -8,6 +8,7 @@ from titanic_analyzer import (
     generate_all_plots,
     load_titanic_data,
     preprocess_data,
+    train_logistic_regression,
 )
 
 
@@ -54,6 +55,13 @@ def main() -> None:
     print("-------------------")
     print("Added features:")
     print("FamilySize, IsAlone, Title, AgeGroup, Deck, FarePerPerson")
+    print()
+
+    model_result = train_logistic_regression(featured)
+
+    print("Logistic Regression")
+    print("-------------------")
+    print(f"Test accuracy: {model_result.accuracy:.3f}")
     print()
 
     print_percentage_series(

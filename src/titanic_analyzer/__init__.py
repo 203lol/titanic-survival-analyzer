@@ -15,6 +15,12 @@ from titanic_analyzer.features import (
     engineer_features,
 )
 from titanic_analyzer.loader import load_titanic_data
+from titanic_analyzer.models import (
+    ModelResult,
+    build_logistic_regression_pipeline,
+    prepare_model_data,
+    train_logistic_regression,
+)
 from titanic_analyzer.preprocessing import (
     fill_missing_age,
     fill_missing_cabin,
@@ -38,6 +44,7 @@ __version__ = "0.1.0"
 
 __all__ = [
     "DatasetValidationError",
+    "ModelResult",
     "SurvivalAnalyzer",
     "add_age_group",
     "add_deck",
@@ -45,6 +52,7 @@ __all__ = [
     "add_fare_per_person",
     "add_is_alone",
     "add_title",
+    "build_logistic_regression_pipeline",
     "engineer_features",
     "fill_missing_age",
     "fill_missing_cabin",
@@ -56,6 +64,8 @@ __all__ = [
     "plot_survival_by_class",
     "plot_survival_by_family_size",
     "plot_survival_by_sex",
+    "prepare_model_data",
     "preprocess_data",
+    "train_logistic_regression",
     "validate_titanic_data",
 ]
