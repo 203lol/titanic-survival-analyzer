@@ -5,6 +5,13 @@ and predicting passenger survival.
 """
 
 from titanic_analyzer.analysis import SurvivalAnalyzer
+from titanic_analyzer.evaluation import (
+    EvaluationMetrics,
+    compare_model_metrics,
+    evaluate_model,
+    save_all_confusion_matrices,
+    save_confusion_matrix,
+)
 from titanic_analyzer.features import (
     add_age_group,
     add_deck,
@@ -50,6 +57,7 @@ __version__ = "0.1.0"
 
 __all__ = [
     "DatasetValidationError",
+    "EvaluationMetrics",
     "ModelResult",
     "SurvivalAnalyzer",
     "add_age_group",
@@ -61,8 +69,10 @@ __all__ = [
     "build_decision_tree_pipeline",
     "build_logistic_regression_pipeline",
     "build_random_forest_pipeline",
+    "compare_model_metrics",
     "compare_models",
     "engineer_features",
+    "evaluate_model",
     "fill_missing_age",
     "fill_missing_cabin",
     "fill_missing_embarked",
@@ -75,6 +85,8 @@ __all__ = [
     "plot_survival_by_sex",
     "prepare_model_data",
     "preprocess_data",
+    "save_all_confusion_matrices",
+    "save_confusion_matrix",
     "train_decision_tree",
     "train_logistic_regression",
     "train_model",

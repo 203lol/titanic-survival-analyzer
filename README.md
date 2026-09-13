@@ -188,3 +188,44 @@ for model_name, result in results.items():
 ```
 
 The model with the highest test accuracy can then be selected for further evaluation.
+
+## Model Evaluation
+
+The classification models are evaluated using multiple metrics rather than accuracy alone.
+
+The following metrics are reported:
+
+* **Accuracy** — proportion of all predictions that are correct
+* **Precision** — proportion of predicted survivors who actually survived
+* **Recall** — proportion of actual survivors correctly identified by the model
+* **F1-score** — harmonic mean of precision and recall
+* **ROC-AUC** — ability of the model to distinguish between survivors and non-survivors across different classification thresholds
+
+Example:
+
+```python
+from titanic_analyzer import (
+    compare_model_metrics,
+    compare_models,
+    engineer_features,
+    load_titanic_data,
+    preprocess_data,
+)
+
+data = load_titanic_data("data/titanic.csv")
+data = preprocess_data(data)
+data = engineer_features(data)
+
+model_results = compare_models(data)
+comparison = compare_model_metrics(model_results)
+
+print(comparison)
+```
+
+Confusion matrices are also generated for each classifier and saved as PNG files in:
+
+```text
+outputs/plots/
+```
+
+Using multiple metrics provides a more complete comparison of model performance than relying only on classification accuracy.

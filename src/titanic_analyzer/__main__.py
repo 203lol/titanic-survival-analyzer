@@ -4,11 +4,13 @@ from pathlib import Path
 
 from titanic_analyzer import (
     SurvivalAnalyzer,
+    compare_model_metrics,
     compare_models,
     engineer_features,
     generate_all_plots,
     load_titanic_data,
     preprocess_data,
+    save_all_confusion_matrices,
 )
 
 
@@ -79,19 +81,31 @@ def main() -> None:
 
     model_results = compare_models(featured)
 
-    print("Model Comparison")
+    comparison = compare_model_metrics(model_results)
+
+    print("Model Evaluation")
     print("----------------")
-
-    for model_name, result in model_results.items():
-        print(f"{model_name}: {result.accuracy:.3f}")
-
-    best_model_name = max(
-        model_results,
-        key=lambda name: model_results[name].accuracy,
+    print(
+        comparison.to_string(
+            index=False,
+            float_format=lambda value: f"{value:.3f}",
+        )
     )
-
     print()
-    print(f"Best model: {best_model_name}")
+
+    best_model_name = comparison.iloc[0]["Model"]
+
+    print(f"Best model by F1-score: {best_model_name}")
+    print()
+
+    confusion_paths = save_all_confusion_matrices(model_results)
+
+    print("Confusion Matrices")
+    print("------------------")
+
+    for path in confusion_paths:
+        print(f"- {path}")
+
     print()
 
     plot_paths = generate_all_plots(featured)

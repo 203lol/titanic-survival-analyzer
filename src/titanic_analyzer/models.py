@@ -37,6 +37,7 @@ class ModelResult:
 
     model: Pipeline
     accuracy: float
+    x_test: pd.DataFrame
     y_test: pd.Series
     predictions: pd.Series
 
@@ -160,6 +161,7 @@ def train_model(
     return ModelResult(
         model=pipeline,
         accuracy=float(accuracy),
+        x_test=x_test,
         y_test=y_test,
         predictions=predictions,
     )
