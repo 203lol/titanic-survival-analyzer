@@ -4,11 +4,11 @@ from pathlib import Path
 
 from titanic_analyzer import (
     SurvivalAnalyzer,
+    compare_models,
     engineer_features,
     generate_all_plots,
     load_titanic_data,
     preprocess_data,
-    train_logistic_regression,
 )
 
 
@@ -57,13 +57,6 @@ def main() -> None:
     print("FamilySize, IsAlone, Title, AgeGroup, Deck, FarePerPerson")
     print()
 
-    model_result = train_logistic_regression(featured)
-
-    print("Logistic Regression")
-    print("-------------------")
-    print(f"Test accuracy: {model_result.accuracy:.3f}")
-    print()
-
     print_percentage_series(
         "Survival by Sex",
         analyzer.survival_by_sex(),
@@ -83,6 +76,23 @@ def main() -> None:
         "Survival by Age Group",
         analyzer.survival_by_age_group(),
     )
+
+    model_results = compare_models(featured)
+
+    print("Model Comparison")
+    print("----------------")
+
+    for model_name, result in model_results.items():
+        print(f"{model_name}: {result.accuracy:.3f}")
+
+    best_model_name = max(
+        model_results,
+        key=lambda name: model_results[name].accuracy,
+    )
+
+    print()
+    print(f"Best model: {best_model_name}")
+    print()
 
     plot_paths = generate_all_plots(featured)
 

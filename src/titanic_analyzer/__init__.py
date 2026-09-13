@@ -17,9 +17,15 @@ from titanic_analyzer.features import (
 from titanic_analyzer.loader import load_titanic_data
 from titanic_analyzer.models import (
     ModelResult,
+    build_decision_tree_pipeline,
     build_logistic_regression_pipeline,
+    build_random_forest_pipeline,
+    compare_models,
     prepare_model_data,
+    train_decision_tree,
     train_logistic_regression,
+    train_model,
+    train_random_forest,
 )
 from titanic_analyzer.preprocessing import (
     fill_missing_age,
@@ -52,7 +58,10 @@ __all__ = [
     "add_fare_per_person",
     "add_is_alone",
     "add_title",
+    "build_decision_tree_pipeline",
     "build_logistic_regression_pipeline",
+    "build_random_forest_pipeline",
+    "compare_models",
     "engineer_features",
     "fill_missing_age",
     "fill_missing_cabin",
@@ -66,6 +75,9 @@ __all__ = [
     "plot_survival_by_sex",
     "prepare_model_data",
     "preprocess_data",
+    "train_decision_tree",
     "train_logistic_regression",
+    "train_model",
+    "train_random_forest",
     "validate_titanic_data",
 ]

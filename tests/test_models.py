@@ -3,9 +3,14 @@
 import pandas as pd
 
 from titanic_analyzer.models import (
+    build_decision_tree_pipeline,
     build_logistic_regression_pipeline,
+    build_random_forest_pipeline,
+    compare_models,
     prepare_model_data,
+    train_decision_tree,
     train_logistic_regression,
+    train_random_forest,
 )
 
 
@@ -180,8 +185,22 @@ def test_prepare_model_data() -> None:
     assert len(features) == len(target)
 
 
-def test_pipeline_contains_expected_steps() -> None:
+def test_logistic_pipeline_contains_expected_steps() -> None:
     pipeline = build_logistic_regression_pipeline()
+
+    assert "preprocessor" in pipeline.named_steps
+    assert "model" in pipeline.named_steps
+
+
+def test_decision_tree_pipeline_contains_model() -> None:
+    pipeline = build_decision_tree_pipeline()
+
+    assert "preprocessor" in pipeline.named_steps
+    assert "model" in pipeline.named_steps
+
+
+def test_random_forest_pipeline_contains_model() -> None:
+    pipeline = build_random_forest_pipeline()
 
     assert "preprocessor" in pipeline.named_steps
     assert "model" in pipeline.named_steps
@@ -191,6 +210,30 @@ def test_train_logistic_regression_returns_accuracy() -> None:
     dataframe = make_model_dataframe()
 
     result = train_logistic_regression(
+        dataframe,
+        test_size=0.25,
+        random_state=42,
+    )
+
+    assert 0.0 <= result.accuracy <= 1.0
+
+
+def test_train_decision_tree_returns_accuracy() -> None:
+    dataframe = make_model_dataframe()
+
+    result = train_decision_tree(
+        dataframe,
+        test_size=0.25,
+        random_state=42,
+    )
+
+    assert 0.0 <= result.accuracy <= 1.0
+
+
+def test_train_random_forest_returns_accuracy() -> None:
+    dataframe = make_model_dataframe()
+
+    result = train_random_forest(
         dataframe,
         test_size=0.25,
         random_state=42,
@@ -209,6 +252,25 @@ def test_predictions_match_test_size() -> None:
     )
 
     assert len(result.predictions) == len(result.y_test)
+
+
+def test_compare_models_returns_all_models() -> None:
+    dataframe = make_model_dataframe()
+
+    results = compare_models(dataframe)
+
+    assert "Logistic Regression" in results
+    assert "Decision Tree" in results
+    assert "Random Forest" in results
+
+
+def test_compare_models_returns_valid_accuracies() -> None:
+    dataframe = make_model_dataframe()
+
+    results = compare_models(dataframe)
+
+    for result in results.values():
+        assert 0.0 <= result.accuracy <= 1.0
 
 
 def test_missing_model_column_raises_error() -> None:

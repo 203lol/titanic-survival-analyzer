@@ -156,3 +156,35 @@ print(f"Accuracy: {result.accuracy:.3f}")
 ```
 
 The dataset is divided into training and test subsets using a stratified split so that the survival-class distribution is preserved.
+
+## Machine Learning Models
+
+The package currently includes three supervised classification models for predicting Titanic passenger survival:
+
+* Logistic Regression
+* Decision Tree
+* Random Forest
+
+All models use the same prepared feature set and train/test split so that their performance can be compared consistently.
+
+Example:
+
+```python
+from titanic_analyzer import (
+    compare_models,
+    engineer_features,
+    load_titanic_data,
+    preprocess_data,
+)
+
+data = load_titanic_data("data/titanic.csv")
+data = preprocess_data(data)
+data = engineer_features(data)
+
+results = compare_models(data)
+
+for model_name, result in results.items():
+    print(f"{model_name}: {result.accuracy:.3f}")
+```
+
+The model with the highest test accuracy can then be selected for further evaluation.
