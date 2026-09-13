@@ -229,3 +229,49 @@ outputs/plots/
 ```
 
 Using multiple metrics provides a more complete comparison of model performance than relying only on classification accuracy.
+
+## Individual Passenger Prediction
+
+The package can use a trained survival model to predict the outcome for an individual passenger.
+
+Passenger information is converted into the same engineered feature structure used during model training, including family size, whether the passenger is travelling alone, and fare per person.
+
+Example:
+
+```python
+from titanic_analyzer import (
+    Passenger,
+    compare_models,
+    engineer_features,
+    load_titanic_data,
+    predict_passenger_survival,
+    preprocess_data,
+)
+
+data = load_titanic_data("data/titanic.csv")
+data = preprocess_data(data)
+data = engineer_features(data)
+
+model_results = compare_models(data)
+model = model_results["Random Forest"].model
+
+passenger = Passenger(
+    pclass=3,
+    sex="male",
+    age=25,
+    fare=15.0,
+    embarked="S",
+    title="Mr",
+    deck="Unknown",
+)
+
+prediction = predict_passenger_survival(
+    model,
+    passenger,
+)
+
+print(prediction.survived)
+print(prediction.survival_probability)
+```
+
+The returned result includes both the predicted survival class and the model's estimated survival probability.

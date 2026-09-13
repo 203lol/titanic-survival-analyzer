@@ -3,12 +3,14 @@
 from pathlib import Path
 
 from titanic_analyzer import (
+    Passenger,
     SurvivalAnalyzer,
     compare_model_metrics,
     compare_models,
     engineer_features,
     generate_all_plots,
     load_titanic_data,
+    predict_passenger_survival,
     preprocess_data,
     save_all_confusion_matrices,
 )
@@ -94,8 +96,35 @@ def main() -> None:
     print()
 
     best_model_name = comparison.iloc[0]["Model"]
+    best_model = model_results[best_model_name].model
 
     print(f"Best model by F1-score: {best_model_name}")
+    print()
+
+    example_passenger = Passenger(
+        pclass=3,
+        sex="male",
+        age=25,
+        fare=15.0,
+        sibsp=0,
+        parch=0,
+        embarked="S",
+        title="Mr",
+        deck="Unknown",
+    )
+
+    prediction = predict_passenger_survival(
+        best_model,
+        example_passenger,
+    )
+
+    print("Example Passenger Prediction")
+    print("----------------------------")
+
+    outcome = "Survived" if prediction.survived else "Did not survive"
+
+    print(f"Predicted outcome: {outcome}")
+    print(f"Survival probability: {prediction.survival_probability:.2%}")
     print()
 
     confusion_paths = save_all_confusion_matrices(model_results)

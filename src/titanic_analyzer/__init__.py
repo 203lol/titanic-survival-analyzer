@@ -34,6 +34,13 @@ from titanic_analyzer.models import (
     train_model,
     train_random_forest,
 )
+from titanic_analyzer.prediction import (
+    Passenger,
+    PassengerPrediction,
+    passenger_to_dataframe,
+    predict_passenger_survival,
+    validate_passenger,
+)
 from titanic_analyzer.preprocessing import (
     fill_missing_age,
     fill_missing_cabin,
@@ -59,6 +66,8 @@ __all__ = [
     "DatasetValidationError",
     "EvaluationMetrics",
     "ModelResult",
+    "Passenger",
+    "PassengerPrediction",
     "SurvivalAnalyzer",
     "add_age_group",
     "add_deck",
@@ -78,11 +87,13 @@ __all__ = [
     "fill_missing_embarked",
     "generate_all_plots",
     "load_titanic_data",
+    "passenger_to_dataframe",
     "plot_age_distribution",
     "plot_fare_distribution",
     "plot_survival_by_class",
     "plot_survival_by_family_size",
     "plot_survival_by_sex",
+    "predict_passenger_survival",
     "prepare_model_data",
     "preprocess_data",
     "save_all_confusion_matrices",
@@ -91,5 +102,6 @@ __all__ = [
     "train_logistic_regression",
     "train_model",
     "train_random_forest",
+    "validate_passenger",
     "validate_titanic_data",
 ]
