@@ -275,3 +275,70 @@ print(prediction.survival_probability)
 ```
 
 The returned result includes both the predicted survival class and the model's estimated survival probability.
+
+## Command-Line Interface
+
+Titanic Survival Analyzer provides a command-line interface with separate commands for dataset inspection, analysis, visualization, model training, and passenger prediction.
+
+Show the available commands:
+
+```bash
+uv run -m titanic_analyzer --help
+```
+
+### Dataset Summary
+
+```bash
+uv run -m titanic_analyzer summary data/titanic.csv
+```
+
+### Exploratory Analysis
+
+```bash
+uv run -m titanic_analyzer analyze data/titanic.csv
+```
+
+### Generate Visualizations
+
+```bash
+uv run -m titanic_analyzer visualize data/titanic.csv
+```
+
+Generated figures are saved to `outputs/plots/` by default.
+
+A different output directory can be specified:
+
+```bash
+uv run -m titanic_analyzer visualize data/titanic.csv \
+    --output outputs/custom_plots
+```
+
+### Train and Compare Models
+
+```bash
+uv run -m titanic_analyzer train data/titanic.csv
+```
+
+To additionally save confusion matrices:
+
+```bash
+uv run -m titanic_analyzer train data/titanic.csv \
+    --save-confusion-matrices
+```
+
+### Predict an Individual Passenger
+
+```bash
+uv run -m titanic_analyzer predict data/titanic.csv \
+    --pclass 3 \
+    --sex male \
+    --age 25 \
+    --fare 15 \
+    --sibsp 0 \
+    --parch 0 \
+    --embarked S \
+    --title Mr \
+    --deck Unknown
+```
+
+The prediction command reports both the predicted survival outcome and the estimated survival probability.
