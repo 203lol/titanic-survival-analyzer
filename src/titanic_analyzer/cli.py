@@ -11,10 +11,12 @@ from titanic_analyzer import (
     engineer_features,
     generate_all_plots,
     generate_reports,
+    load_model,
     load_titanic_data,
     predict_passenger_survival,
     preprocess_data,
     save_all_confusion_matrices,
+    save_model,
 )
 
 
@@ -127,11 +129,15 @@ def command_predict(args: argparse.Namespace) -> None:
     """Predict survival for an individual passenger."""
     dataframe = load_prepared_data(args.data)
 
-    model_results = compare_models(dataframe)
-    comparison = compare_model_metrics(model_results)
+    if args.model:
+        best_model = load_model(args.model)
+        best_model_name = "Saved model"
+    else:
+        model_results = compare_models(dataframe)
+        comparison = compare_model_metrics(model_results)
 
-    best_model_name = comparison.iloc[0]["Model"]
-    best_model = model_results[best_model_name].model
+        best_model_name = comparison.iloc[0]["Model"]
+        best_model = model_results[best_model_name].model
 
     passenger = Passenger(
         pclass=args.pclass,
@@ -175,6 +181,26 @@ def command_report(args: argparse.Namespace) -> None:
 
     for path in paths:
         print(f"- {path}")
+
+
+def command_save_model(args: argparse.Namespace) -> None:
+    """Train the best model and save it to disk."""
+    dataframe = load_prepared_data(args.data)
+
+    model_results = compare_models(dataframe)
+    comparison = compare_model_metrics(model_results)
+
+    best_model_name = comparison.iloc[0]["Model"]
+    best_model = model_results[best_model_name].model
+
+    path = save_model(
+        best_model,
+        args.output,
+    )
+
+    print("Saved trained model:")
+    print(f"- {path}")
+    print(f"Model: {best_model_name}")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -253,6 +279,10 @@ def build_parser() -> argparse.ArgumentParser:
         help="Path to the Titanic CSV file.",
     )
     predict_parser.add_argument(
+        "--model",
+        help="Path to a previously saved model.",
+    )
+    predict_parser.add_argument(
         "--pclass",
         type=int,
         required=True,
@@ -320,6 +350,21 @@ def build_parser() -> argparse.ArgumentParser:
         help="Directory where report files are saved.",
     )
     report_parser.set_defaults(func=command_report)
+
+    save_model_parser = subparsers.add_parser(
+        "save-model",
+        help="Train the best model and save it to disk.",
+    )
+    save_model_parser.add_argument(
+        "data",
+        help="Path to the Titanic CSV file.",
+    )
+    save_model_parser.add_argument(
+        "--output",
+        default="outputs/models/best_model.joblib",
+        help="Path where the trained model is saved.",
+    )
+    save_model_parser.set_defaults(func=command_save_model)
 
     return parser
 

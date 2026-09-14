@@ -105,6 +105,31 @@ def test_predict_defaults() -> None:
     assert args.parch == 0
     assert args.embarked == "S"
     assert args.deck == "Unknown"
+    assert args.model is None
+
+
+def test_predict_accepts_saved_model_path() -> None:
+    parser = build_parser()
+
+    args = parser.parse_args(
+        [
+            "predict",
+            "data/titanic.csv",
+            "--model",
+            "outputs/models/best_model.joblib",
+            "--pclass",
+            "3",
+            "--sex",
+            "male",
+            "--age",
+            "25",
+            "--fare",
+            "15",
+        ]
+    )
+
+    assert args.command == "predict"
+    assert args.model == "outputs/models/best_model.joblib"
 
 
 def test_parser_accepts_report_command() -> None:
@@ -137,3 +162,18 @@ def test_report_accepts_custom_output_directory() -> None:
     assert args.command == "report"
     assert args.data == "data/titanic.csv"
     assert args.output == "my_reports"
+
+
+def test_parser_accepts_save_model_command() -> None:
+    parser = build_parser()
+
+    args = parser.parse_args(
+        [
+            "save-model",
+            "data/titanic.csv",
+        ]
+    )
+
+    assert args.command == "save-model"
+    assert args.data == "data/titanic.csv"
+    assert args.output == "outputs/models/best_model.joblib"

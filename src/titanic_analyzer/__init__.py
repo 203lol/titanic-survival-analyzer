@@ -34,6 +34,10 @@ from titanic_analyzer.models import (
     train_model,
     train_random_forest,
 )
+from titanic_analyzer.persistence import (
+    load_model,
+    save_model,
+)
 from titanic_analyzer.prediction import (
     Passenger,
     PassengerPrediction,
@@ -97,6 +101,7 @@ __all__ = [
     "fill_missing_embarked",
     "generate_all_plots",
     "generate_reports",
+    "load_model",
     "load_titanic_data",
     "passenger_to_dataframe",
     "plot_age_distribution",
@@ -110,6 +115,7 @@ __all__ = [
     "save_all_confusion_matrices",
     "save_analysis_report",
     "save_confusion_matrix",
+    "save_model",
     "save_model_comparison_csv",
     "save_model_results_json",
     "train_decision_tree",
