@@ -1,0 +1,34 @@
+Titanic Survival Analysis Report
+================================
+
+Dataset Summary
+---------------
+Passengers: 891
+Survivors: 342
+Deaths: 549
+Overall survival rate: 38.38%
+
+Survival by Sex
+---------------
+female: 74.20%
+male: 18.89%
+
+Survival by Passenger Class
+---------------------------
+Class 1: 62.96%
+Class 2: 47.28%
+Class 3: 24.24%
+
+Survival by Embarkation Port
+----------------------------
+C: 55.36%
+Q: 38.96%
+S: 33.90%
+
+Survival by Age Group
+---------------------
+Child: 57.35%
+Teen: 48.89%
+Young Adult: 34.44%
+Adult: 41.63%
+Senior: 26.92%

@@ -7,15 +7,20 @@ from titanic_analyzer.validation import (
     REQUIRED_COLUMNS,
     DatasetValidationError,
     validate_non_empty,
+    validate_numeric_ranges,
+    validate_passenger_classes,
     validate_required_columns,
+    validate_sex_values,
+    validate_survived_values,
     validate_titanic_data,
 )
 
 
 def make_valid_dataframe() -> pd.DataFrame:
-    """Create a minimal structurally valid Titanic DataFrame."""
+    """Create a minimal valid Titanic DataFrame."""
     row = {column: 0 for column in REQUIRED_COLUMNS}
 
+    row["Pclass"] = 3
     row["Name"] = "Test Passenger"
     row["Sex"] = "male"
     row["Ticket"] = "TEST"
@@ -26,16 +31,13 @@ def make_valid_dataframe() -> pd.DataFrame:
 
 
 def test_required_columns_accept_valid_dataframe() -> None:
-    """Validation should accept a DataFrame with all required columns."""
     dataframe = make_valid_dataframe()
 
     validate_required_columns(dataframe)
 
 
 def test_missing_required_column_raises_error() -> None:
-    """Validation should report missing required columns."""
-    dataframe = make_valid_dataframe()
-    dataframe = dataframe.drop(columns=["Age"])
+    dataframe = make_valid_dataframe().drop(columns=["Age"])
 
     with pytest.raises(
         DatasetValidationError,
@@ -45,9 +47,7 @@ def test_missing_required_column_raises_error() -> None:
 
 
 def test_multiple_missing_columns_are_reported() -> None:
-    """Validation should report all missing required columns."""
-    dataframe = make_valid_dataframe()
-    dataframe = dataframe.drop(columns=["Age", "Fare"])
+    dataframe = make_valid_dataframe().drop(columns=["Age", "Fare"])
 
     with pytest.raises(DatasetValidationError) as error:
         validate_required_columns(dataframe)
@@ -59,7 +59,6 @@ def test_multiple_missing_columns_are_reported() -> None:
 
 
 def test_empty_dataframe_raises_error() -> None:
-    """Validation should reject a DataFrame with no rows."""
     dataframe = pd.DataFrame(columns=sorted(REQUIRED_COLUMNS))
 
     with pytest.raises(
@@ -70,7 +69,116 @@ def test_empty_dataframe_raises_error() -> None:
 
 
 def test_validate_titanic_data_accepts_valid_data() -> None:
-    """Combined validation should accept valid Titanic data."""
     dataframe = make_valid_dataframe()
 
     validate_titanic_data(dataframe)
+
+
+def test_invalid_survived_value_raises_error() -> None:
+    dataframe = pd.DataFrame(
+        {
+            "Survived": [0, 1, 2],
+        }
+    )
+
+    with pytest.raises(
+        DatasetValidationError,
+        match="Survived",
+    ):
+        validate_survived_values(dataframe)
+
+
+def test_invalid_passenger_class_raises_error() -> None:
+    dataframe = pd.DataFrame(
+        {
+            "Pclass": [1, 2, 3, 5],
+        }
+    )
+
+    with pytest.raises(
+        DatasetValidationError,
+        match="Pclass",
+    ):
+        validate_passenger_classes(dataframe)
+
+
+def test_invalid_sex_value_raises_error() -> None:
+    dataframe = pd.DataFrame(
+        {
+            "Sex": ["male", "female", "unknown"],
+        }
+    )
+
+    with pytest.raises(
+        DatasetValidationError,
+        match="Sex",
+    ):
+        validate_sex_values(dataframe)
+
+
+def test_negative_age_raises_error() -> None:
+    dataframe = pd.DataFrame(
+        {
+            "Age": [-5],
+            "Fare": [10.0],
+            "SibSp": [0],
+            "Parch": [0],
+        }
+    )
+
+    with pytest.raises(
+        DatasetValidationError,
+        match="Age",
+    ):
+        validate_numeric_ranges(dataframe)
+
+
+def test_negative_fare_raises_error() -> None:
+    dataframe = pd.DataFrame(
+        {
+            "Age": [25],
+            "Fare": [-10.0],
+            "SibSp": [0],
+            "Parch": [0],
+        }
+    )
+
+    with pytest.raises(
+        DatasetValidationError,
+        match="Fare",
+    ):
+        validate_numeric_ranges(dataframe)
+
+
+def test_negative_sibsp_raises_error() -> None:
+    dataframe = pd.DataFrame(
+        {
+            "Age": [25],
+            "Fare": [10.0],
+            "SibSp": [-1],
+            "Parch": [0],
+        }
+    )
+
+    with pytest.raises(
+        DatasetValidationError,
+        match="SibSp",
+    ):
+        validate_numeric_ranges(dataframe)
+
+
+def test_negative_parch_raises_error() -> None:
+    dataframe = pd.DataFrame(
+        {
+            "Age": [25],
+            "Fare": [10.0],
+            "SibSp": [0],
+            "Parch": [-1],
+        }
+    )
+
+    with pytest.raises(
+        DatasetValidationError,
+        match="Parch",
+    ):
+        validate_numeric_ranges(dataframe)

@@ -17,7 +17,7 @@ from titanic_analyzer.features import (
 
 
 def make_feature_dataframe() -> pd.DataFrame:
-    """Create a small Titanic-like DataFrame for feature tests."""
+    """Create sample data for feature engineering tests."""
     return pd.DataFrame(
         {
             "Name": [
@@ -52,6 +52,34 @@ def test_add_is_alone() -> None:
     assert result.loc[1, "IsAlone"] == 0
 
 
+def test_single_passenger_is_marked_alone() -> None:
+    dataframe = pd.DataFrame(
+        {
+            "SibSp": [0],
+            "Parch": [0],
+        }
+    )
+
+    result = add_is_alone(dataframe)
+
+    assert result.loc[0, "IsAlone"] == 1
+    assert result.loc[0, "FamilySize"] == 1
+
+
+def test_family_passenger_is_not_marked_alone() -> None:
+    dataframe = pd.DataFrame(
+        {
+            "SibSp": [1],
+            "Parch": [2],
+        }
+    )
+
+    result = add_is_alone(dataframe)
+
+    assert result.loc[0, "IsAlone"] == 0
+    assert result.loc[0, "FamilySize"] == 4
+
+
 def test_extract_title_from_name() -> None:
     title = extract_title_from_name("Braund, Mr. Owen Harris")
 
@@ -70,6 +98,18 @@ def test_add_title() -> None:
     result = add_title(dataframe)
 
     assert list(result["Title"]) == ["Mr", "Mrs", "Miss"]
+
+
+def test_title_is_extracted_from_name() -> None:
+    dataframe = pd.DataFrame(
+        {
+            "Name": ["Braund, Mr. Owen Harris"],
+        }
+    )
+
+    result = add_title(dataframe)
+
+    assert result.loc[0, "Title"] == "Mr"
 
 
 def test_add_age_group() -> None:
@@ -94,7 +134,23 @@ def test_add_deck() -> None:
 
     result = add_deck(dataframe)
 
-    assert list(result["Deck"]) == ["Unknown", "C", "E"]
+    assert list(result["Deck"]) == [
+        "Unknown",
+        "C",
+        "E",
+    ]
+
+
+def test_missing_cabin_produces_unknown_deck() -> None:
+    dataframe = pd.DataFrame(
+        {
+            "Cabin": [None],
+        }
+    )
+
+    result = add_deck(dataframe)
+
+    assert result.loc[0, "Deck"] == "Unknown"
 
 
 def test_add_fare_per_person() -> None:
@@ -130,4 +186,7 @@ def test_engineer_features_does_not_modify_original() -> None:
 
     engineer_features(dataframe)
 
-    pd.testing.assert_frame_equal(dataframe, original)
+    pd.testing.assert_frame_equal(
+        dataframe,
+        original,
+    )

@@ -47,8 +47,18 @@ from titanic_analyzer.preprocessing import (
     fill_missing_embarked,
     preprocess_data,
 )
+from titanic_analyzer.reporting import (
+    generate_reports,
+    save_analysis_report,
+    save_model_comparison_csv,
+    save_model_results_json,
+)
 from titanic_analyzer.validation import (
     DatasetValidationError,
+    validate_numeric_ranges,
+    validate_passenger_classes,
+    validate_sex_values,
+    validate_survived_values,
     validate_titanic_data,
 )
 from titanic_analyzer.visualization import (
@@ -86,6 +96,7 @@ __all__ = [
     "fill_missing_cabin",
     "fill_missing_embarked",
     "generate_all_plots",
+    "generate_reports",
     "load_titanic_data",
     "passenger_to_dataframe",
     "plot_age_distribution",
@@ -97,11 +108,18 @@ __all__ = [
     "prepare_model_data",
     "preprocess_data",
     "save_all_confusion_matrices",
+    "save_analysis_report",
     "save_confusion_matrix",
+    "save_model_comparison_csv",
+    "save_model_results_json",
     "train_decision_tree",
     "train_logistic_regression",
     "train_model",
     "train_random_forest",
+    "validate_numeric_ranges",
     "validate_passenger",
+    "validate_passenger_classes",
+    "validate_sex_values",
+    "validate_survived_values",
     "validate_titanic_data",
 ]

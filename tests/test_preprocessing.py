@@ -13,7 +13,7 @@ from titanic_analyzer.preprocessing import (
 
 
 def make_test_dataframe() -> pd.DataFrame:
-    """Create a small Titanic-like DataFrame for preprocessing tests."""
+    """Create sample data for preprocessing tests."""
     return pd.DataFrame(
         {
             "Age": [22.0, None, 35.0],
@@ -37,8 +37,7 @@ def test_fill_missing_age_uses_median() -> None:
 
     result = fill_missing_age(dataframe)
 
-    expected_median = 28.5
-    assert result.loc[1, "Age"] == expected_median
+    assert result.loc[1, "Age"] == 28.5
 
 
 def test_fill_missing_cabin_uses_unknown() -> None:
@@ -89,4 +88,49 @@ def test_preprocess_data_removes_expected_missing_values() -> None:
 
     assert result["Age"].isna().sum() == 0
     assert result["Cabin"].isna().sum() == 0
+    assert result["Embarked"].isna().sum() == 0
+
+
+def test_preprocessing_removes_missing_age_values() -> None:
+    dataframe = pd.DataFrame(
+        {
+            "Age": [20.0, None, 40.0],
+            "Cabin": ["C85", None, None],
+            "Embarked": ["S", None, "C"],
+            "Sex": ["male", "female", "male"],
+        }
+    )
+
+    result = preprocess_data(dataframe)
+
+    assert result["Age"].isna().sum() == 0
+
+
+def test_preprocessing_removes_missing_cabin_values() -> None:
+    dataframe = pd.DataFrame(
+        {
+            "Age": [20.0, 30.0],
+            "Cabin": [None, "C85"],
+            "Embarked": ["S", "C"],
+            "Sex": ["male", "female"],
+        }
+    )
+
+    result = preprocess_data(dataframe)
+
+    assert result["Cabin"].isna().sum() == 0
+
+
+def test_preprocessing_removes_missing_embarked_values() -> None:
+    dataframe = pd.DataFrame(
+        {
+            "Age": [20.0, 30.0],
+            "Cabin": ["C85", "E46"],
+            "Embarked": [None, "S"],
+            "Sex": ["male", "female"],
+        }
+    )
+
+    result = preprocess_data(dataframe)
+
     assert result["Embarked"].isna().sum() == 0

@@ -105,3 +105,35 @@ def test_predict_defaults() -> None:
     assert args.parch == 0
     assert args.embarked == "S"
     assert args.deck == "Unknown"
+
+
+def test_parser_accepts_report_command() -> None:
+    parser = build_parser()
+
+    args = parser.parse_args(
+        [
+            "report",
+            "data/titanic.csv",
+        ]
+    )
+
+    assert args.command == "report"
+    assert args.data == "data/titanic.csv"
+    assert args.output == "outputs/reports"
+
+
+def test_report_accepts_custom_output_directory() -> None:
+    parser = build_parser()
+
+    args = parser.parse_args(
+        [
+            "report",
+            "data/titanic.csv",
+            "--output",
+            "my_reports",
+        ]
+    )
+
+    assert args.command == "report"
+    assert args.data == "data/titanic.csv"
+    assert args.output == "my_reports"

@@ -10,6 +10,7 @@ from titanic_analyzer import (
     compare_models,
     engineer_features,
     generate_all_plots,
+    generate_reports,
     load_titanic_data,
     predict_passenger_survival,
     preprocess_data,
@@ -158,11 +159,29 @@ def command_predict(args: argparse.Namespace) -> None:
     print(f"Survival probability: {prediction.survival_probability:.2%}")
 
 
+def command_report(args: argparse.Namespace) -> None:
+    """Generate analysis and model report files."""
+    dataframe = load_prepared_data(args.data)
+
+    model_results = compare_models(dataframe)
+
+    paths = generate_reports(
+        dataframe,
+        model_results,
+        output_directory=args.output,
+    )
+
+    print("Generated reports:")
+
+    for path in paths:
+        print(f"- {path}")
+
+
 def build_parser() -> argparse.ArgumentParser:
     """Build the command-line argument parser."""
     parser = argparse.ArgumentParser(
         prog="titanic_analyzer",
-        description=("Analyze Titanic passenger data and predict survival."),
+        description="Analyze Titanic passenger data and predict survival.",
     )
 
     subparsers = parser.add_subparsers(
@@ -286,6 +305,21 @@ def build_parser() -> argparse.ArgumentParser:
         help="Passenger deck.",
     )
     predict_parser.set_defaults(func=command_predict)
+
+    report_parser = subparsers.add_parser(
+        "report",
+        help="Generate analysis and model report files.",
+    )
+    report_parser.add_argument(
+        "data",
+        help="Path to the Titanic CSV file.",
+    )
+    report_parser.add_argument(
+        "--output",
+        default="outputs/reports",
+        help="Directory where report files are saved.",
+    )
+    report_parser.set_defaults(func=command_report)
 
     return parser
 
