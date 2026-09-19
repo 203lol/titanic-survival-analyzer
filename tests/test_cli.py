@@ -28,6 +28,7 @@ def test_parser_accepts_analyze_command() -> None:
     )
 
     assert args.command == "analyze"
+    assert args.data == "data/titanic.csv"
 
 
 def test_parser_accepts_visualize_command() -> None:
@@ -41,6 +42,7 @@ def test_parser_accepts_visualize_command() -> None:
     )
 
     assert args.command == "visualize"
+    assert args.data == "data/titanic.csv"
     assert args.output == "outputs/plots"
 
 
@@ -55,6 +57,8 @@ def test_parser_accepts_train_command() -> None:
     )
 
     assert args.command == "train"
+    assert args.data == "data/titanic.csv"
+    assert args.output == "outputs/plots"
     assert args.save_confusion_matrices is False
 
 
@@ -77,6 +81,7 @@ def test_parser_accepts_predict_command() -> None:
     )
 
     assert args.command == "predict"
+    assert args.data == "data/titanic.csv"
     assert args.pclass == 3
     assert args.sex == "male"
     assert args.age == 25.0
@@ -104,6 +109,7 @@ def test_predict_defaults() -> None:
     assert args.sibsp == 0
     assert args.parch == 0
     assert args.embarked == "S"
+    assert args.title == "Mr"
     assert args.deck == "Unknown"
     assert args.model is None
 

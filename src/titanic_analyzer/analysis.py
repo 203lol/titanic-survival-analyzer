@@ -1,33 +1,32 @@
-"""Exploratory analysis utilities for Titanic passenger data."""
+"""Analysis functions for Titanic passenger data."""
 
 import pandas as pd
 
 
 class SurvivalAnalyzer:
-    """Analyze survival patterns in Titanic passenger data."""
+    """Analyze survival patterns in the Titanic dataset."""
 
     def __init__(self, dataframe: pd.DataFrame) -> None:
-        """Initialize the analyzer with a Titanic DataFrame."""
         self.dataframe = dataframe.copy()
 
     def passenger_count(self) -> int:
-        """Return the total number of passengers."""
+        """Return the number of passengers."""
         return len(self.dataframe)
 
     def survivor_count(self) -> int:
-        """Return the number of surviving passengers."""
+        """Return the number of survivors."""
         return int(self.dataframe["Survived"].sum())
 
     def death_count(self) -> int:
-        """Return the number of passengers who did not survive."""
+        """Return the number of deaths."""
         return int((self.dataframe["Survived"] == 0).sum())
 
     def overall_survival_rate(self) -> float:
-        """Return the overall survival rate as a percentage."""
+        """Return the overall survival rate."""
         return float(self.dataframe["Survived"].mean() * 100)
 
     def survival_by_sex(self) -> pd.Series:
-        """Return survival rate by passenger sex."""
+        """Calculate survival rate by sex."""
         return (
             self.dataframe.groupby("Sex")["Survived"]
             .mean()
@@ -36,17 +35,25 @@ class SurvivalAnalyzer:
         )
 
     def survival_by_class(self) -> pd.Series:
-        """Return survival rate by passenger class."""
-        return self.dataframe.groupby("Pclass")["Survived"].mean().mul(100).sort_index()
+        """Calculate survival rate by passenger class."""
+        return (
+            self.dataframe.groupby("Pclass")["Survived"]
+            .mean()
+            .mul(100)
+            .sort_index()
+        )
 
     def survival_by_embarkation(self) -> pd.Series:
-        """Return survival rate by embarkation port."""
+        """Calculate survival rate by embarkation port."""
         return (
-            self.dataframe.groupby("Embarked")["Survived"].mean().mul(100).sort_index()
+            self.dataframe.groupby("Embarked")["Survived"]
+            .mean()
+            .mul(100)
+            .sort_index()
         )
 
     def survival_by_age_group(self) -> pd.Series:
-        """Return survival rate by age group."""
+        """Calculate survival rate by age group."""
         age_groups = pd.cut(
             self.dataframe["Age"],
             bins=[0, 12, 18, 35, 60, float("inf")],
@@ -62,11 +69,11 @@ class SurvivalAnalyzer:
         )
 
     def fare_statistics(self) -> pd.Series:
-        """Return basic descriptive statistics for passenger fares."""
+        """Return fare statistics."""
         return self.dataframe["Fare"].describe()
 
     def dataset_summary(self) -> dict[str, float | int]:
-        """Return core Titanic survival summary statistics."""
+        """Return a summary of the dataset."""
         return {
             "passengers": self.passenger_count(),
             "survivors": self.survivor_count(),

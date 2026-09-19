@@ -1,4 +1,4 @@
-"""Command-line interface for Titanic Survival Analyzer."""
+"""Command-line interface for the Titanic Survival Analyzer."""
 
 import argparse
 from pathlib import Path
@@ -21,7 +21,7 @@ from titanic_analyzer import (
 
 
 def load_prepared_data(data_path: str | Path):
-    """Load, clean, and engineer Titanic passenger data."""
+    """Load and prepare the Titanic dataset."""
     dataframe = load_titanic_data(data_path)
     dataframe = preprocess_data(dataframe)
     dataframe = engineer_features(dataframe)
@@ -30,7 +30,7 @@ def load_prepared_data(data_path: str | Path):
 
 
 def command_summary(args: argparse.Namespace) -> None:
-    """Run the summary command."""
+    """Show a summary of the dataset."""
     dataframe = load_prepared_data(args.data)
     analyzer = SurvivalAnalyzer(dataframe)
     summary = analyzer.dataset_summary()
@@ -44,7 +44,7 @@ def command_summary(args: argparse.Namespace) -> None:
 
 
 def command_analyze(args: argparse.Namespace) -> None:
-    """Run exploratory survival analysis."""
+    """Show survival statistics."""
     dataframe = load_prepared_data(args.data)
     analyzer = SurvivalAnalyzer(dataframe)
 
@@ -77,7 +77,7 @@ def command_analyze(args: argparse.Namespace) -> None:
 
 
 def command_visualize(args: argparse.Namespace) -> None:
-    """Generate Titanic visualization files."""
+    """Generate visualization files."""
     dataframe = load_prepared_data(args.data)
 
     paths = generate_all_plots(
@@ -86,13 +86,12 @@ def command_visualize(args: argparse.Namespace) -> None:
     )
 
     print("Generated visualizations:")
-
     for path in paths:
         print(f"- {path}")
 
 
 def command_train(args: argparse.Namespace) -> None:
-    """Train and compare survival models."""
+    """Train and compare the models."""
     dataframe = load_prepared_data(args.data)
 
     model_results = compare_models(dataframe)
@@ -120,24 +119,23 @@ def command_train(args: argparse.Namespace) -> None:
 
         print()
         print("Generated confusion matrices:")
-
         for path in paths:
             print(f"- {path}")
 
 
 def command_predict(args: argparse.Namespace) -> None:
-    """Predict survival for an individual passenger."""
+    """Predict survival for one passenger."""
     dataframe = load_prepared_data(args.data)
 
     if args.model:
-        best_model = load_model(args.model)
-        best_model_name = "Saved model"
+        model = load_model(args.model)
+        model_name = "Saved model"
     else:
         model_results = compare_models(dataframe)
         comparison = compare_model_metrics(model_results)
 
-        best_model_name = comparison.iloc[0]["Model"]
-        best_model = model_results[best_model_name].model
+        model_name = comparison.iloc[0]["Model"]
+        model = model_results[model_name].model
 
     passenger = Passenger(
         pclass=args.pclass,
@@ -152,23 +150,25 @@ def command_predict(args: argparse.Namespace) -> None:
     )
 
     prediction = predict_passenger_survival(
-        best_model,
+        model,
         passenger,
     )
 
-    outcome = "Survived" if prediction.survived else "Did not survive"
+    if prediction.survived:
+        outcome = "Survived"
+    else:
+        outcome = "Did not survive"
 
     print("Passenger Survival Prediction")
     print("=============================")
-    print(f"Model: {best_model_name}")
+    print(f"Model: {model_name}")
     print(f"Predicted outcome: {outcome}")
     print(f"Survival probability: {prediction.survival_probability:.2%}")
 
 
 def command_report(args: argparse.Namespace) -> None:
-    """Generate analysis and model report files."""
+    """Generate report files."""
     dataframe = load_prepared_data(args.data)
-
     model_results = compare_models(dataframe)
 
     paths = generate_reports(
@@ -178,33 +178,32 @@ def command_report(args: argparse.Namespace) -> None:
     )
 
     print("Generated reports:")
-
     for path in paths:
         print(f"- {path}")
 
 
 def command_save_model(args: argparse.Namespace) -> None:
-    """Train the best model and save it to disk."""
+    """Train and save the best model."""
     dataframe = load_prepared_data(args.data)
 
     model_results = compare_models(dataframe)
     comparison = compare_model_metrics(model_results)
 
-    best_model_name = comparison.iloc[0]["Model"]
-    best_model = model_results[best_model_name].model
+    model_name = comparison.iloc[0]["Model"]
+    model = model_results[model_name].model
 
     path = save_model(
-        best_model,
+        model,
         args.output,
     )
 
     print("Saved trained model:")
     print(f"- {path}")
-    print(f"Model: {best_model_name}")
+    print(f"Model: {model_name}")
 
 
 def build_parser() -> argparse.ArgumentParser:
-    """Build the command-line argument parser."""
+    """Create the command-line parser."""
     parser = argparse.ArgumentParser(
         prog="titanic_analyzer",
         description="Analyze Titanic passenger data and predict survival.",
@@ -227,7 +226,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     analyze_parser = subparsers.add_parser(
         "analyze",
-        help="Run exploratory survival analysis.",
+        help="Run survival analysis.",
     )
     analyze_parser.add_argument(
         "data",
@@ -237,7 +236,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     visualize_parser = subparsers.add_parser(
         "visualize",
-        help="Generate visualization PNG files.",
+        help="Generate visualization files.",
     )
     visualize_parser.add_argument(
         "data",
@@ -246,7 +245,7 @@ def build_parser() -> argparse.ArgumentParser:
     visualize_parser.add_argument(
         "--output",
         default="outputs/plots",
-        help="Directory where plot files are saved.",
+        help="Directory where plots are saved.",
     )
     visualize_parser.set_defaults(func=command_visualize)
 
@@ -266,7 +265,7 @@ def build_parser() -> argparse.ArgumentParser:
     train_parser.add_argument(
         "--save-confusion-matrices",
         action="store_true",
-        help="Save confusion matrix plots for each model.",
+        help="Save a confusion matrix for each model.",
     )
     train_parser.set_defaults(func=command_train)
 
@@ -280,7 +279,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     predict_parser.add_argument(
         "--model",
-        help="Path to a previously saved model.",
+        help="Path to a saved model.",
     )
     predict_parser.add_argument(
         "--pclass",
@@ -338,7 +337,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     report_parser = subparsers.add_parser(
         "report",
-        help="Generate analysis and model report files.",
+        help="Generate analysis and model reports.",
     )
     report_parser.add_argument(
         "data",
@@ -347,13 +346,13 @@ def build_parser() -> argparse.ArgumentParser:
     report_parser.add_argument(
         "--output",
         default="outputs/reports",
-        help="Directory where report files are saved.",
+        help="Directory where reports are saved.",
     )
     report_parser.set_defaults(func=command_report)
 
     save_model_parser = subparsers.add_parser(
         "save-model",
-        help="Train the best model and save it to disk.",
+        help="Train and save the best model.",
     )
     save_model_parser.add_argument(
         "data",
@@ -362,7 +361,7 @@ def build_parser() -> argparse.ArgumentParser:
     save_model_parser.add_argument(
         "--output",
         default="outputs/models/best_model.joblib",
-        help="Path where the trained model is saved.",
+        help="Path where the model is saved.",
     )
     save_model_parser.set_defaults(func=command_save_model)
 
@@ -370,7 +369,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> None:
-    """Run the Titanic Survival Analyzer CLI."""
+    """Run the command-line interface."""
     parser = build_parser()
     args = parser.parse_args()
 

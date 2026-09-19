@@ -2,13 +2,29 @@
 
 A Python toolkit for analyzing Titanic passenger data and predicting passenger survival.
 
-The project includes data validation, preprocessing, feature engineering, exploratory analysis, visualization, machine-learning models, model evaluation, passenger prediction, report generation, and model persistence.
+The project includes data validation, preprocessing, feature engineering, exploratory analysis, visualization, machine-learning models, model evaluation, individual passenger prediction, report generation, and model persistence.
+
+## Setup
+
+This project requires Python 3.10 or newer and uses `uv` for dependency management.
+
+Install the project dependencies with:
+
+```bash
+uv sync
+```
+
+Check that the command-line interface is available:
+
+```bash
+uv run -m titanic_analyzer --help
+```
 
 ## Exploratory Survival Analysis
 
-The `SurvivalAnalyzer` class provides exploratory statistics for understanding survival patterns in the Titanic dataset.
+The `SurvivalAnalyzer` class provides statistics for exploring survival patterns in the Titanic dataset.
 
-The analysis currently includes:
+The analysis includes:
 
 * Total number of passengers
 * Number of survivors and deaths
@@ -40,20 +56,18 @@ print(analyzer.survival_by_embarkation())
 print(analyzer.survival_by_age_group())
 ```
 
-This analysis helps identify relationships between passenger characteristics and survival outcomes.
-
 ## Feature Engineering
 
-The package provides feature-engineering utilities that transform the original Titanic passenger attributes into additional features for analysis and predictive modeling.
+The package provides feature-engineering utilities that transform the original passenger attributes into additional features for analysis and predictive modeling.
 
 The following features are generated:
 
-* `FamilySize` — total family size calculated from siblings/spouses, parents/children, and the passenger
+* `FamilySize` — total family size based on siblings/spouses, parents/children, and the passenger
 * `IsAlone` — indicates whether the passenger was travelling without family
 * `Title` — extracts titles such as `Mr`, `Mrs`, and `Miss` from passenger names
 * `AgeGroup` — groups passengers into age categories
 * `Deck` — extracts the deck letter from cabin information
-* `FarePerPerson` — estimates the fare per family member
+* `FarePerPerson` — estimates the fare paid per family member
 
 Example:
 
@@ -84,7 +98,7 @@ print(
 
 ## Data Visualization
 
-The package can generate visualizations of important patterns in the Titanic dataset.
+The package can generate visualizations for several patterns in the Titanic dataset.
 
 Available visualizations include:
 
@@ -114,19 +128,25 @@ for path in plot_paths:
     print(path)
 ```
 
-By default, generated plots are saved in:
+Generated plots are saved by default in:
 
 ```text
 outputs/plots/
 ```
 
-## Logistic Regression Model
+## Machine Learning Models
 
-The package includes a Logistic Regression model for predicting Titanic passenger survival.
+The project includes three supervised classification models for Titanic survival prediction:
 
-The machine-learning pipeline performs preprocessing and model training. Numeric features are standardized, while categorical features are converted using one-hot encoding.
+* Logistic Regression
+* Decision Tree
+* Random Forest
 
-The model uses the following features:
+All three models use the same feature structure and preprocessing approach.
+
+Numeric features are standardized and categorical features are converted using one-hot encoding.
+
+The models use the following features:
 
 * `Age`
 * `Fare`
@@ -138,37 +158,6 @@ The model uses the following features:
 * `Embarked`
 * `Title`
 * `Deck`
-
-Example:
-
-```python
-from titanic_analyzer import (
-    engineer_features,
-    load_titanic_data,
-    preprocess_data,
-    train_logistic_regression,
-)
-
-data = load_titanic_data("data/titanic.csv")
-data = preprocess_data(data)
-data = engineer_features(data)
-
-result = train_logistic_regression(data)
-
-print(f"Accuracy: {result.accuracy:.3f}")
-```
-
-The dataset is divided into training and test subsets using a stratified split so that the survival-class distribution is preserved.
-
-## Machine Learning Models
-
-The package includes three supervised classification models:
-
-* Logistic Regression
-* Decision Tree
-* Random Forest
-
-All models use the same prepared feature set and train/test split so their performance can be compared consistently.
 
 Example:
 
@@ -190,19 +179,19 @@ for model_name, result in results.items():
     print(f"{model_name}: {result.accuracy:.3f}")
 ```
 
-The models can then be evaluated using several classification metrics.
+The dataset is divided into training and test subsets using a stratified split so that the survival-class distribution is preserved.
 
 ## Model Evaluation
 
-The classification models are evaluated using multiple metrics rather than accuracy alone.
+The classification models are evaluated using several metrics rather than accuracy alone.
 
-The following metrics are reported:
+The following metrics are calculated:
 
-* **Accuracy** — proportion of all predictions that are correct
+* **Accuracy** — proportion of predictions that are correct
 * **Precision** — proportion of predicted survivors who actually survived
 * **Recall** — proportion of actual survivors correctly identified
 * **F1-score** — harmonic mean of precision and recall
-* **ROC-AUC** — ability of the model to distinguish between survivors and non-survivors across different classification thresholds
+* **ROC-AUC** — ability of the model to distinguish between the two survival classes
 
 Example:
 
@@ -225,19 +214,21 @@ comparison = compare_model_metrics(model_results)
 print(comparison)
 ```
 
-Confusion matrices can also be generated for each classifier and saved in:
+The comparison table is sorted by F1-score. The model with the highest F1-score is used as the best model by the command-line prediction and model-persistence workflows.
+
+Confusion matrices can also be generated for each classifier.
+
+They are saved by default in:
 
 ```text
 outputs/plots/
 ```
 
-The model with the highest F1-score is selected as the best model for prediction and model persistence.
-
 ## Individual Passenger Prediction
 
-The package can use a trained survival model to predict the outcome for an individual passenger.
+The package can predict survival for an individual passenger using a trained model.
 
-Passenger information is converted into the same feature structure used during model training, including family size, whether the passenger is travelling alone, and fare per person.
+Passenger information is converted into the same feature structure used during training. Derived features such as family size, travelling alone, and fare per person are calculated automatically.
 
 Example:
 
@@ -277,13 +268,13 @@ print(prediction.survived)
 print(prediction.survival_probability)
 ```
 
-The result includes both the predicted survival class and the estimated survival probability.
+The prediction contains both the predicted survival outcome and the estimated survival probability.
 
 ## Command-Line Interface
 
-Titanic Survival Analyzer provides a command-line interface for dataset inspection, analysis, visualization, model training, prediction, report generation, and model persistence.
+The package includes a command-line interface for analysis, visualization, model training, prediction, report generation, and model persistence.
 
-Show the available commands:
+Show all available commands:
 
 ```bash
 uv run -m titanic_analyzer --help
@@ -348,9 +339,9 @@ The prediction command reports the predicted survival outcome and estimated surv
 
 ## Report Generation
 
-Titanic Survival Analyzer can save analysis and model evaluation results as structured output files.
+Titanic Survival Analyzer can save analysis and model-evaluation results as structured output files.
 
-Generate all reports with:
+Generate the reports with:
 
 ```bash
 uv run -m titanic_analyzer report data/titanic.csv
@@ -362,11 +353,11 @@ The generated files are saved by default in:
 outputs/reports/
 ```
 
-Three report formats are generated:
+Three report files are generated:
 
 * `analysis_report.txt` — human-readable exploratory survival analysis
-* `model_comparison.csv` — model evaluation metrics for further analysis
-* `model_results.json` — structured machine-learning results including the best model by F1-score
+* `model_comparison.csv` — model evaluation metrics
+* `model_results.json` — structured model results including the best model by F1-score
 
 A custom output directory can be specified:
 
@@ -403,11 +394,11 @@ for path in paths:
 
 ## Model Persistence
 
-Trained models can be saved to disk and reused later for passenger predictions. This avoids training the models again each time a prediction is made.
+Trained models can be saved to disk and reused later for passenger predictions. This avoids training all models again each time a prediction is made.
 
 ### Save the Best Model
 
-Train the available models, select the best-performing model by F1-score, and save it with:
+Train the available models, select the model with the highest F1-score, and save it with:
 
 ```bash
 uv run -m titanic_analyzer save-model data/titanic.csv
@@ -419,7 +410,7 @@ By default, the trained model is saved to:
 outputs/models/best_model.joblib
 ```
 
-A different output path can be specified using `--output`:
+A different output path can be specified with `--output`:
 
 ```bash
 uv run -m titanic_analyzer save-model data/titanic.csv \
@@ -441,6 +432,35 @@ uv run -m titanic_analyzer predict data/titanic.csv \
 
 When `--model` is provided, the saved model is loaded from disk and used for prediction instead of training the models again.
 
+## Project Structure
+
+```text
+titanic-survival-analyzer/
+├── data/
+│   └── titanic.csv
+├── src/
+│   └── titanic_analyzer/
+│       ├── __init__.py
+│       ├── __main__.py
+│       ├── analysis.py
+│       ├── cli.py
+│       ├── evaluation.py
+│       ├── features.py
+│       ├── loader.py
+│       ├── models.py
+│       ├── persistence.py
+│       ├── prediction.py
+│       ├── preprocessing.py
+│       ├── reporting.py
+│       ├── validation.py
+│       └── visualization.py
+├── tests/
+├── .gitignore
+├── pyproject.toml
+├── README.md
+└── uv.lock
+```
+
 ## Testing
 
 Run the complete test suite with:
@@ -457,7 +477,9 @@ uv run pytest --cov=titanic_analyzer --cov-report=term-missing
 
 ## Code Quality
 
-Check the project with Ruff:
+The project uses Ruff for linting and formatting.
+
+Check the code with:
 
 ```bash
 uv run ruff check .
@@ -469,8 +491,30 @@ Check formatting with:
 uv run ruff format --check .
 ```
 
-Automatically format the project with:
+To automatically format the project:
 
 ```bash
 uv run ruff format .
 ```
+
+## Requirements
+
+The project requires Python 3.10 or newer.
+
+Main dependencies:
+
+* pandas
+* NumPy
+* Matplotlib
+* scikit-learn
+* joblib
+
+Development tools:
+
+* pytest
+* pytest-cov
+* Ruff
+
+## Author
+
+Lokesh Pandit

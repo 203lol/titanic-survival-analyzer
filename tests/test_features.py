@@ -92,6 +92,12 @@ def test_extract_title_without_title_returns_unknown() -> None:
     assert title == "Unknown"
 
 
+def test_title_mapping() -> None:
+    assert extract_title_from_name("Test, Mlle. Anna") == "Miss"
+    assert extract_title_from_name("Test, Ms. Anna") == "Miss"
+    assert extract_title_from_name("Test, Mme. Anna") == "Mrs"
+
+
 def test_add_title() -> None:
     dataframe = make_feature_dataframe()
 
@@ -129,16 +135,17 @@ def test_extract_deck() -> None:
     assert extract_deck(None) == "Unknown"
 
 
+def test_extract_deck_handles_empty_value() -> None:
+    assert extract_deck("") == "Unknown"
+    assert extract_deck("   ") == "Unknown"
+
+
 def test_add_deck() -> None:
     dataframe = make_feature_dataframe()
 
     result = add_deck(dataframe)
 
-    assert list(result["Deck"]) == [
-        "Unknown",
-        "C",
-        "E",
-    ]
+    assert list(result["Deck"]) == ["Unknown", "C", "E"]
 
 
 def test_missing_cabin_produces_unknown_deck() -> None:
@@ -186,7 +193,4 @@ def test_engineer_features_does_not_modify_original() -> None:
 
     engineer_features(dataframe)
 
-    pd.testing.assert_frame_equal(
-        dataframe,
-        original,
-    )
+    pd.testing.assert_frame_equal(dataframe, original)

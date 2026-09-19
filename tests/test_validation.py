@@ -68,10 +68,26 @@ def test_empty_dataframe_raises_error() -> None:
         validate_non_empty(dataframe)
 
 
+def test_non_empty_dataframe_is_accepted() -> None:
+    dataframe = make_valid_dataframe()
+
+    validate_non_empty(dataframe)
+
+
 def test_validate_titanic_data_accepts_valid_data() -> None:
     dataframe = make_valid_dataframe()
 
     validate_titanic_data(dataframe)
+
+
+def test_valid_survived_values_are_accepted() -> None:
+    dataframe = pd.DataFrame(
+        {
+            "Survived": [0, 1],
+        }
+    )
+
+    validate_survived_values(dataframe)
 
 
 def test_invalid_survived_value_raises_error() -> None:
@@ -88,6 +104,16 @@ def test_invalid_survived_value_raises_error() -> None:
         validate_survived_values(dataframe)
 
 
+def test_valid_passenger_classes_are_accepted() -> None:
+    dataframe = pd.DataFrame(
+        {
+            "Pclass": [1, 2, 3],
+        }
+    )
+
+    validate_passenger_classes(dataframe)
+
+
 def test_invalid_passenger_class_raises_error() -> None:
     dataframe = pd.DataFrame(
         {
@@ -102,6 +128,26 @@ def test_invalid_passenger_class_raises_error() -> None:
         validate_passenger_classes(dataframe)
 
 
+def test_valid_sex_values_are_accepted() -> None:
+    dataframe = pd.DataFrame(
+        {
+            "Sex": ["male", "female"],
+        }
+    )
+
+    validate_sex_values(dataframe)
+
+
+def test_sex_validation_is_case_insensitive() -> None:
+    dataframe = pd.DataFrame(
+        {
+            "Sex": ["MALE", "Female"],
+        }
+    )
+
+    validate_sex_values(dataframe)
+
+
 def test_invalid_sex_value_raises_error() -> None:
     dataframe = pd.DataFrame(
         {
@@ -114,6 +160,19 @@ def test_invalid_sex_value_raises_error() -> None:
         match="Sex",
     ):
         validate_sex_values(dataframe)
+
+
+def test_valid_numeric_ranges_are_accepted() -> None:
+    dataframe = pd.DataFrame(
+        {
+            "Age": [0, 25, 80],
+            "Fare": [0.0, 10.0, 100.0],
+            "SibSp": [0, 1, 2],
+            "Parch": [0, 1, 3],
+        }
+    )
+
+    validate_numeric_ranges(dataframe)
 
 
 def test_negative_age_raises_error() -> None:

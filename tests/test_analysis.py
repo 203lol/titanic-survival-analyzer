@@ -1,4 +1,4 @@
-"""Tests for Titanic exploratory survival analysis."""
+"""Tests for Titanic survival analysis."""
 
 import pandas as pd
 import pytest
@@ -7,7 +7,7 @@ from titanic_analyzer.analysis import SurvivalAnalyzer
 
 
 def make_analysis_dataframe() -> pd.DataFrame:
-    """Create a small Titanic-like DataFrame for analysis tests."""
+    """Create sample data for analysis tests."""
     return pd.DataFrame(
         {
             "Survived": [1, 0, 1, 0],
@@ -78,6 +78,18 @@ def test_survival_by_embarkation() -> None:
     assert result["C"] == pytest.approx(100.0)
     assert result["Q"] == pytest.approx(0.0)
     assert result["S"] == pytest.approx(50.0)
+
+
+def test_survival_by_age_group() -> None:
+    dataframe = make_analysis_dataframe()
+    analyzer = SurvivalAnalyzer(dataframe)
+
+    result = analyzer.survival_by_age_group()
+
+    assert result["Child"] == pytest.approx(100.0)
+    assert result["Young Adult"] == pytest.approx(100.0)
+    assert result["Adult"] == pytest.approx(0.0)
+    assert result["Senior"] == pytest.approx(0.0)
 
 
 def test_dataset_summary() -> None:

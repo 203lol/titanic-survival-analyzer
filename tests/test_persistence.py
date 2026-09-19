@@ -1,21 +1,31 @@
-"""Tests for model persistence."""
+"""Tests for saving and loading trained models."""
 
 import pandas as pd
 import pytest
+from sklearn.pipeline import Pipeline
 
 from titanic_analyzer.models import train_logistic_regression
 from titanic_analyzer.persistence import load_model, save_model
 
 
 def make_model_dataframe() -> pd.DataFrame:
-    """Create data for persistence tests."""
+    """Create a small dataset for persistence tests."""
     return pd.DataFrame(
         {
             "Age": [22, 38, 26, 35, 28, 54, 2, 27],
             "Fare": [7.25, 71.28, 7.93, 53.1, 8.05, 51.86, 21.08, 11.13],
             "FamilySize": [2, 2, 1, 2, 1, 1, 5, 1],
             "IsAlone": [0, 0, 1, 0, 1, 1, 0, 1],
-            "FarePerPerson": [3.63, 35.64, 7.93, 26.55, 8.05, 51.86, 4.22, 11.13],
+            "FarePerPerson": [
+                3.63,
+                35.64,
+                7.93,
+                26.55,
+                8.05,
+                51.86,
+                4.22,
+                11.13,
+            ],
             "Pclass": [3, 1, 3, 1, 3, 1, 3, 3],
             "Sex": [
                 "male",
@@ -46,6 +56,7 @@ def make_model_dataframe() -> pd.DataFrame:
 
 def test_save_and_load_model(tmp_path) -> None:
     dataframe = make_model_dataframe()
+
     result = train_logistic_regression(
         dataframe,
         test_size=0.25,
@@ -58,7 +69,7 @@ def test_save_and_load_model(tmp_path) -> None:
     loaded_model = load_model(saved_path)
 
     assert saved_path.exists()
-    assert loaded_model is not None
+    assert isinstance(loaded_model, Pipeline)
 
 
 def test_load_missing_model_raises_error(tmp_path) -> None:

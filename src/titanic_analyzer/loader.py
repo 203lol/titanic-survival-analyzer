@@ -1,4 +1,4 @@
-"""Data loading utilities for Titanic passenger datasets."""
+"""Load Titanic passenger data."""
 
 from pathlib import Path
 
@@ -8,29 +8,7 @@ from titanic_analyzer.validation import validate_titanic_data
 
 
 def load_titanic_data(file_path: str | Path) -> pd.DataFrame:
-    """Load and validate a Titanic passenger CSV file.
-
-    Parameters
-    ----------
-    file_path:
-        Path to the Titanic CSV file.
-
-    Returns
-    -------
-    pandas.DataFrame
-        The loaded and validated Titanic dataset.
-
-    Raises
-    ------
-    FileNotFoundError
-        If the specified CSV file does not exist.
-    ValueError
-        If the path is not a CSV file.
-    pandas.errors.EmptyDataError
-        If the CSV file contains no columns.
-    DatasetValidationError
-        If the dataset does not contain the expected Titanic structure.
-    """
+    """Load and validate a Titanic CSV file."""
     path = Path(file_path)
 
     if not path.exists():
@@ -43,7 +21,6 @@ def load_titanic_data(file_path: str | Path) -> pd.DataFrame:
         raise ValueError(f"Expected a CSV file, received: {path.suffix}")
 
     dataframe = pd.read_csv(path)
-
     validate_titanic_data(dataframe)
 
     return dataframe

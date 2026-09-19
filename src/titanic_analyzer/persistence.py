@@ -1,4 +1,4 @@
-"""Functions for saving and loading trained models."""
+"""Save and load trained models."""
 
 from pathlib import Path
 
@@ -10,7 +10,7 @@ def save_model(
     model: Pipeline,
     path: str | Path,
 ) -> Path:
-    """Save a trained model."""
+    """Save a trained model to disk."""
     output_path = Path(path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -20,7 +20,7 @@ def save_model(
 
 
 def load_model(path: str | Path) -> Pipeline:
-    """Load a trained model."""
+    """Load a trained model from disk."""
     model_path = Path(path)
 
     if not model_path.exists():

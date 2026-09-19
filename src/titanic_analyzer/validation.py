@@ -1,4 +1,4 @@
-"""Validation functions for Titanic data."""
+"""Validation for Titanic passenger data."""
 
 from collections.abc import Iterable
 
@@ -25,7 +25,7 @@ VALID_SEX_VALUES = {"male", "female"}
 
 
 class DatasetValidationError(ValueError):
-    """Error raised when the dataset is invalid."""
+    """Raised when the dataset fails validation."""
 
 
 def validate_required_columns(
@@ -38,7 +38,9 @@ def validate_required_columns(
 
     if missing_columns:
         missing = ", ".join(sorted(missing_columns))
-        raise DatasetValidationError(f"Dataset is missing required columns: {missing}")
+        raise DatasetValidationError(
+            f"Dataset is missing required columns: {missing}"
+        )
 
 
 def validate_non_empty(dataframe: pd.DataFrame) -> None:
@@ -53,7 +55,9 @@ def validate_survived_values(dataframe: pd.DataFrame) -> None:
     invalid_values = values.difference(VALID_SURVIVED_VALUES)
 
     if invalid_values:
-        raise DatasetValidationError("Survived column must contain only 0 or 1.")
+        raise DatasetValidationError(
+            "Survived column must contain only 0 or 1."
+        )
 
 
 def validate_passenger_classes(dataframe: pd.DataFrame) -> None:
@@ -62,20 +66,31 @@ def validate_passenger_classes(dataframe: pd.DataFrame) -> None:
     invalid_values = values.difference(VALID_PASSENGER_CLASSES)
 
     if invalid_values:
-        raise DatasetValidationError("Pclass column must contain only 1, 2, or 3.")
+        raise DatasetValidationError(
+            "Pclass column must contain only 1, 2, or 3."
+        )
 
 
 def validate_sex_values(dataframe: pd.DataFrame) -> None:
     """Check values in the Sex column."""
-    values = set(dataframe["Sex"].dropna().astype(str).str.lower().unique())
+    values = set(
+        dataframe["Sex"]
+        .dropna()
+        .astype(str)
+        .str.strip()
+        .str.lower()
+        .unique()
+    )
     invalid_values = values.difference(VALID_SEX_VALUES)
 
     if invalid_values:
-        raise DatasetValidationError("Sex column must contain only 'male' or 'female'.")
+        raise DatasetValidationError(
+            "Sex column must contain only 'male' or 'female'."
+        )
 
 
 def validate_numeric_ranges(dataframe: pd.DataFrame) -> None:
-    """Check that numeric passenger values are valid."""
+    """Check numeric passenger values."""
     if (dataframe["Age"].dropna() < 0).any():
         raise DatasetValidationError("Age values cannot be negative.")
 
@@ -90,7 +105,7 @@ def validate_numeric_ranges(dataframe: pd.DataFrame) -> None:
 
 
 def validate_titanic_data(dataframe: pd.DataFrame) -> None:
-    """Run all Titanic dataset validation checks."""
+    """Run all dataset validation checks."""
     validate_non_empty(dataframe)
     validate_required_columns(dataframe)
     validate_survived_values(dataframe)

@@ -1,10 +1,10 @@
-"""Preprocessing utilities for Titanic passenger data."""
+"""Preprocessing for Titanic passenger data."""
 
 import pandas as pd
 
 
 def fill_missing_age(dataframe: pd.DataFrame) -> pd.DataFrame:
-    """Fill missing Age values using the median passenger age."""
+    """Fill missing ages with the median age."""
     result = dataframe.copy()
 
     median_age = result["Age"].median()
@@ -14,7 +14,7 @@ def fill_missing_age(dataframe: pd.DataFrame) -> pd.DataFrame:
 
 
 def fill_missing_embarked(dataframe: pd.DataFrame) -> pd.DataFrame:
-    """Fill missing Embarked values using the most common port."""
+    """Fill missing embarkation ports with the most common value."""
     result = dataframe.copy()
 
     mode = result["Embarked"].mode()
@@ -26,7 +26,7 @@ def fill_missing_embarked(dataframe: pd.DataFrame) -> pd.DataFrame:
 
 
 def fill_missing_cabin(dataframe: pd.DataFrame) -> pd.DataFrame:
-    """Replace missing Cabin values with 'Unknown'."""
+    """Replace missing cabin values with Unknown."""
     result = dataframe.copy()
 
     result["Cabin"] = result["Cabin"].fillna("Unknown")
@@ -53,7 +53,7 @@ def normalize_embarked(dataframe: pd.DataFrame) -> pd.DataFrame:
 
 
 def preprocess_data(dataframe: pd.DataFrame) -> pd.DataFrame:
-    """Run the complete Titanic preprocessing pipeline."""
+    """Apply the preprocessing steps."""
     result = dataframe.copy()
 
     result = fill_missing_age(result)

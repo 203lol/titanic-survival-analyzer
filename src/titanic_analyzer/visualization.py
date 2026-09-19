@@ -1,4 +1,4 @@
-"""Visualization utilities for Titanic passenger data."""
+"""Visualizations for Titanic passenger data."""
 
 from pathlib import Path
 
@@ -9,7 +9,7 @@ import pandas as pd
 def _prepare_output_path(
     output_path: str | Path,
 ) -> Path:
-    """Create the parent directory and return the output path."""
+    """Create the output directory if needed."""
     path = Path(output_path)
     path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -20,7 +20,7 @@ def plot_survival_by_sex(
     dataframe: pd.DataFrame,
     output_path: str | Path,
 ) -> Path:
-    """Create and save a plot of survival rate by sex."""
+    """Plot survival rate by sex."""
     path = _prepare_output_path(output_path)
 
     survival_rates = dataframe.groupby("Sex")["Survived"].mean().mul(100)
@@ -48,11 +48,14 @@ def plot_survival_by_class(
     dataframe: pd.DataFrame,
     output_path: str | Path,
 ) -> Path:
-    """Create and save a plot of survival rate by passenger class."""
+    """Plot survival rate by passenger class."""
     path = _prepare_output_path(output_path)
 
     survival_rates = (
-        dataframe.groupby("Pclass")["Survived"].mean().mul(100).sort_index()
+        dataframe.groupby("Pclass")["Survived"]
+        .mean()
+        .mul(100)
+        .sort_index()
     )
 
     fig, ax = plt.subplots()
@@ -78,7 +81,7 @@ def plot_age_distribution(
     dataframe: pd.DataFrame,
     output_path: str | Path,
 ) -> Path:
-    """Create and save a histogram of passenger ages."""
+    """Plot the passenger age distribution."""
     path = _prepare_output_path(output_path)
 
     fig, ax = plt.subplots()
@@ -104,7 +107,7 @@ def plot_fare_distribution(
     dataframe: pd.DataFrame,
     output_path: str | Path,
 ) -> Path:
-    """Create and save a histogram of passenger fares."""
+    """Plot the passenger fare distribution."""
     path = _prepare_output_path(output_path)
 
     fig, ax = plt.subplots()
@@ -130,7 +133,7 @@ def plot_survival_by_family_size(
     dataframe: pd.DataFrame,
     output_path: str | Path,
 ) -> Path:
-    """Create and save survival rate by family size."""
+    """Plot survival rate by family size."""
     path = _prepare_output_path(output_path)
 
     if "FamilySize" not in dataframe.columns:
@@ -140,7 +143,10 @@ def plot_survival_by_family_size(
         )
 
     survival_rates = (
-        dataframe.groupby("FamilySize")["Survived"].mean().mul(100).sort_index()
+        dataframe.groupby("FamilySize")["Survived"]
+        .mean()
+        .mul(100)
+        .sort_index()
     )
 
     fig, ax = plt.subplots()
@@ -166,11 +172,11 @@ def generate_all_plots(
     dataframe: pd.DataFrame,
     output_directory: str | Path = "outputs/plots",
 ) -> list[Path]:
-    """Generate and save all standard Titanic visualizations."""
+    """Generate all Titanic plots."""
     output_directory = Path(output_directory)
     output_directory.mkdir(parents=True, exist_ok=True)
 
-    plot_paths = [
+    paths = [
         plot_survival_by_sex(
             dataframe,
             output_directory / "survival_by_sex.png",
@@ -193,4 +199,4 @@ def generate_all_plots(
         ),
     ]
 
-    return plot_paths
+    return paths

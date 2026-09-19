@@ -1,4 +1,4 @@
-"""Evaluation utilities for Titanic survival models."""
+"""Model evaluation functions."""
 
 from dataclasses import dataclass
 from pathlib import Path
@@ -19,7 +19,7 @@ from titanic_analyzer.models import ModelResult
 
 @dataclass
 class EvaluationMetrics:
-    """Store classification evaluation metrics."""
+    """Store model evaluation metrics."""
 
     accuracy: float
     precision: float
@@ -29,10 +29,9 @@ class EvaluationMetrics:
 
 
 def evaluate_model(result: ModelResult) -> EvaluationMetrics:
-    """Calculate classification metrics for a trained model."""
+    """Calculate evaluation metrics for a model."""
     y_true = result.y_test
     y_pred = result.predictions
-
     probabilities = result.model.predict_proba(result.x_test)[:, 1]
 
     return EvaluationMetrics(
@@ -70,7 +69,7 @@ def evaluate_model(result: ModelResult) -> EvaluationMetrics:
 def compare_model_metrics(
     model_results: dict[str, ModelResult],
 ) -> pd.DataFrame:
-    """Create a comparison table for multiple trained models."""
+    """Compare evaluation metrics for trained models."""
     rows = []
 
     for model_name, result in model_results.items():
@@ -100,7 +99,7 @@ def save_confusion_matrix(
     model_name: str,
     output_path: str | Path,
 ) -> Path:
-    """Create and save a confusion matrix for a model."""
+    """Save a confusion matrix for a model."""
     path = Path(output_path)
     path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -125,7 +124,7 @@ def save_all_confusion_matrices(
     model_results: dict[str, ModelResult],
     output_directory: str | Path = "outputs/plots",
 ) -> list[Path]:
-    """Save confusion matrices for all trained models."""
+    """Save confusion matrices for all models."""
     output_directory = Path(output_directory)
     output_directory.mkdir(parents=True, exist_ok=True)
 

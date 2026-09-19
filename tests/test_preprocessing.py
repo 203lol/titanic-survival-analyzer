@@ -69,7 +69,7 @@ def test_normalize_embarked() -> None:
 
     result = normalize_embarked(dataframe)
 
-    assert result.loc[0, "Embarked"] == "S"
+    assert list(result["Embarked"].dropna()) == ["S", "S"]
 
 
 def test_preprocess_data_does_not_modify_original() -> None:
@@ -91,6 +91,15 @@ def test_preprocess_data_removes_expected_missing_values() -> None:
     assert result["Embarked"].isna().sum() == 0
 
 
+def test_preprocess_data_normalizes_values() -> None:
+    dataframe = make_test_dataframe()
+
+    result = preprocess_data(dataframe)
+
+    assert list(result["Sex"]) == ["male", "female", "male"]
+    assert set(result["Embarked"]) == {"S"}
+
+
 def test_preprocessing_removes_missing_age_values() -> None:
     dataframe = pd.DataFrame(
         {
@@ -104,6 +113,7 @@ def test_preprocessing_removes_missing_age_values() -> None:
     result = preprocess_data(dataframe)
 
     assert result["Age"].isna().sum() == 0
+    assert result.loc[1, "Age"] == 30.0
 
 
 def test_preprocessing_removes_missing_cabin_values() -> None:
@@ -119,6 +129,7 @@ def test_preprocessing_removes_missing_cabin_values() -> None:
     result = preprocess_data(dataframe)
 
     assert result["Cabin"].isna().sum() == 0
+    assert result.loc[0, "Cabin"] == "Unknown"
 
 
 def test_preprocessing_removes_missing_embarked_values() -> None:
@@ -134,3 +145,4 @@ def test_preprocessing_removes_missing_embarked_values() -> None:
     result = preprocess_data(dataframe)
 
     assert result["Embarked"].isna().sum() == 0
+    assert result.loc[0, "Embarked"] == "S"

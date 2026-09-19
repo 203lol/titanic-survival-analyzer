@@ -1,12 +1,12 @@
-"""Feature engineering utilities for Titanic passenger data."""
+"""Feature engineering for Titanic passenger data."""
 
 import re
 
 import numpy as np
 import pandas as pd
 
-AGE_BINS = [0, 12, 18, 35, 60, np.inf]
 
+AGE_BINS = [0, 12, 18, 35, 60, np.inf]
 AGE_LABELS = [
     "Child",
     "Teen",
@@ -17,20 +17,15 @@ AGE_LABELS = [
 
 
 def add_family_size(dataframe: pd.DataFrame) -> pd.DataFrame:
-    """Add total passenger family size.
-
-    Family size is calculated as the passenger plus the number of
-    siblings/spouses and parents/children travelling with them.
-    """
+    """Add the passenger's family size."""
     result = dataframe.copy()
-
     result["FamilySize"] = result["SibSp"] + result["Parch"] + 1
 
     return result
 
 
 def add_is_alone(dataframe: pd.DataFrame) -> pd.DataFrame:
-    """Add a binary feature indicating whether the passenger travelled alone."""
+    """Add whether the passenger travelled alone."""
     result = dataframe.copy()
 
     if "FamilySize" not in result.columns:
@@ -42,8 +37,8 @@ def add_is_alone(dataframe: pd.DataFrame) -> pd.DataFrame:
 
 
 def extract_title_from_name(name: str) -> str:
-    """Extract a passenger title from a Titanic passenger name."""
-    match = re.search(r",\s*([^.]*)\.", name)
+    """Extract the title from a passenger name."""
+    match = re.search(r",\s*([^.]+)\.", name)
 
     if match is None:
         return "Unknown"
@@ -60,16 +55,15 @@ def extract_title_from_name(name: str) -> str:
 
 
 def add_title(dataframe: pd.DataFrame) -> pd.DataFrame:
-    """Extract passenger titles from the Name column."""
+    """Add passenger titles."""
     result = dataframe.copy()
-
     result["Title"] = result["Name"].astype(str).apply(extract_title_from_name)
 
     return result
 
 
 def add_age_group(dataframe: pd.DataFrame) -> pd.DataFrame:
-    """Add categorical passenger age groups."""
+    """Add passenger age groups."""
     result = dataframe.copy()
 
     result["AgeGroup"] = pd.cut(
@@ -83,7 +77,7 @@ def add_age_group(dataframe: pd.DataFrame) -> pd.DataFrame:
 
 
 def extract_deck(cabin: object) -> str:
-    """Extract the passenger deck from a cabin value."""
+    """Extract the deck from a cabin value."""
     if pd.isna(cabin):
         return "Unknown"
 
@@ -96,16 +90,15 @@ def extract_deck(cabin: object) -> str:
 
 
 def add_deck(dataframe: pd.DataFrame) -> pd.DataFrame:
-    """Add passenger deck based on the Cabin column."""
+    """Add the passenger deck."""
     result = dataframe.copy()
-
     result["Deck"] = result["Cabin"].apply(extract_deck)
 
     return result
 
 
 def add_fare_per_person(dataframe: pd.DataFrame) -> pd.DataFrame:
-    """Add approximate fare per family member."""
+    """Add fare per family member."""
     result = dataframe.copy()
 
     if "FamilySize" not in result.columns:
@@ -117,7 +110,7 @@ def add_fare_per_person(dataframe: pd.DataFrame) -> pd.DataFrame:
 
 
 def engineer_features(dataframe: pd.DataFrame) -> pd.DataFrame:
-    """Run the complete Titanic feature engineering pipeline."""
+    """Add all engineered features."""
     result = dataframe.copy()
 
     result = add_family_size(result)

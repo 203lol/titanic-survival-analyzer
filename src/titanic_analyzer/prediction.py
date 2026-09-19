@@ -1,4 +1,4 @@
-"""Prediction utilities for individual Titanic passengers."""
+"""Passenger survival prediction."""
 
 from dataclasses import dataclass
 
@@ -8,7 +8,7 @@ from sklearn.pipeline import Pipeline
 
 @dataclass
 class Passenger:
-    """Store passenger information required for survival prediction."""
+    """Passenger information used for prediction."""
 
     pclass: int
     sex: str
@@ -23,18 +23,18 @@ class Passenger:
 
 @dataclass
 class PassengerPrediction:
-    """Store the result of a passenger survival prediction."""
+    """Result of a passenger survival prediction."""
 
     survived: bool
     survival_probability: float
 
 
 def validate_passenger(passenger: Passenger) -> None:
-    """Validate passenger input values."""
+    """Check passenger input values."""
     if passenger.pclass not in {1, 2, 3}:
         raise ValueError("Passenger class must be 1, 2, or 3.")
 
-    if passenger.sex.lower() not in {"male", "female"}:
+    if passenger.sex.strip().lower() not in {"male", "female"}:
         raise ValueError("Sex must be 'male' or 'female'.")
 
     if passenger.age < 0:
@@ -49,17 +49,16 @@ def validate_passenger(passenger: Passenger) -> None:
     if passenger.parch < 0:
         raise ValueError("Parch cannot be negative.")
 
-    if passenger.embarked.upper() not in {"C", "Q", "S"}:
+    if passenger.embarked.strip().upper() not in {"C", "Q", "S"}:
         raise ValueError("Embarked must be C, Q, or S.")
 
 
 def passenger_to_dataframe(passenger: Passenger) -> pd.DataFrame:
-    """Convert one passenger into the model feature format."""
+    """Convert passenger data to model input."""
     validate_passenger(passenger)
 
     family_size = passenger.sibsp + passenger.parch + 1
     is_alone = int(family_size == 1)
-
     fare_per_person = passenger.fare / family_size
 
     return pd.DataFrame(
@@ -84,7 +83,7 @@ def predict_passenger_survival(
     model: Pipeline,
     passenger: Passenger,
 ) -> PassengerPrediction:
-    """Predict survival outcome and probability for one passenger."""
+    """Predict survival for one passenger."""
     passenger_data = passenger_to_dataframe(passenger)
 
     prediction = int(model.predict(passenger_data)[0])

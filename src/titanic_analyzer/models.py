@@ -1,4 +1,4 @@
-"""Machine-learning models for Titanic survival prediction."""
+"""Models for Titanic survival prediction."""
 
 from dataclasses import dataclass
 
@@ -33,7 +33,7 @@ CATEGORICAL_FEATURES = [
 
 @dataclass
 class ModelResult:
-    """Store a trained model and its test performance."""
+    """Store a trained model and its test results."""
 
     model: Pipeline
     accuracy: float
@@ -45,8 +45,10 @@ class ModelResult:
 def prepare_model_data(
     dataframe: pd.DataFrame,
 ) -> tuple[pd.DataFrame, pd.Series]:
-    """Prepare feature matrix and target vector for survival prediction."""
-    required_columns = set(NUMERIC_FEATURES + CATEGORICAL_FEATURES + [TARGET_COLUMN])
+    """Prepare features and target for model training."""
+    required_columns = set(
+        NUMERIC_FEATURES + CATEGORICAL_FEATURES + [TARGET_COLUMN]
+    )
 
     missing_columns = required_columns.difference(dataframe.columns)
 
@@ -63,7 +65,7 @@ def prepare_model_data(
 
 
 def build_preprocessor() -> ColumnTransformer:
-    """Build the shared preprocessing pipeline for all models."""
+    """Build the preprocessing steps used by the models."""
     return ColumnTransformer(
         transformers=[
             (
@@ -84,7 +86,7 @@ def build_preprocessor() -> ColumnTransformer:
 
 
 def build_logistic_regression_pipeline() -> Pipeline:
-    """Build a preprocessing and Logistic Regression pipeline."""
+    """Build the Logistic Regression pipeline."""
     model = LogisticRegression(
         max_iter=1000,
         random_state=42,
@@ -99,7 +101,7 @@ def build_logistic_regression_pipeline() -> Pipeline:
 
 
 def build_decision_tree_pipeline() -> Pipeline:
-    """Build a preprocessing and Decision Tree pipeline."""
+    """Build the Decision Tree pipeline."""
     model = DecisionTreeClassifier(
         max_depth=5,
         random_state=42,
@@ -114,7 +116,7 @@ def build_decision_tree_pipeline() -> Pipeline:
 
 
 def build_random_forest_pipeline() -> Pipeline:
-    """Build a preprocessing and Random Forest pipeline."""
+    """Build the Random Forest pipeline."""
     model = RandomForestClassifier(
         n_estimators=200,
         max_depth=6,
@@ -135,7 +137,7 @@ def train_model(
     test_size: float = 0.2,
     random_state: int = 42,
 ) -> ModelResult:
-    """Train and evaluate a supplied Titanic survival model."""
+    """Train a model and return its test results."""
     features, target = prepare_model_data(dataframe)
 
     x_train, x_test, y_train, y_test = train_test_split(
@@ -172,7 +174,7 @@ def train_logistic_regression(
     test_size: float = 0.2,
     random_state: int = 42,
 ) -> ModelResult:
-    """Train and evaluate a Logistic Regression survival model."""
+    """Train a Logistic Regression model."""
     return train_model(
         dataframe,
         build_logistic_regression_pipeline(),
@@ -186,7 +188,7 @@ def train_decision_tree(
     test_size: float = 0.2,
     random_state: int = 42,
 ) -> ModelResult:
-    """Train and evaluate a Decision Tree survival model."""
+    """Train a Decision Tree model."""
     return train_model(
         dataframe,
         build_decision_tree_pipeline(),
@@ -200,7 +202,7 @@ def train_random_forest(
     test_size: float = 0.2,
     random_state: int = 42,
 ) -> ModelResult:
-    """Train and evaluate a Random Forest survival model."""
+    """Train a Random Forest model."""
     return train_model(
         dataframe,
         build_random_forest_pipeline(),
@@ -212,7 +214,7 @@ def train_random_forest(
 def compare_models(
     dataframe: pd.DataFrame,
 ) -> dict[str, ModelResult]:
-    """Train and compare the available survival models."""
+    """Train all available models."""
     return {
         "Logistic Regression": train_logistic_regression(dataframe),
         "Decision Tree": train_decision_tree(dataframe),

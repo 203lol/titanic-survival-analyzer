@@ -13,7 +13,7 @@ from titanic_analyzer.models import compare_models
 
 
 def make_evaluation_dataframe() -> pd.DataFrame:
-    """Create a Titanic-like dataset for evaluation tests."""
+    """Create a small dataset for evaluation tests."""
     return pd.DataFrame(
         {
             "Age": [
@@ -244,6 +244,16 @@ def test_compare_model_metrics_contains_all_models() -> None:
     assert "Recall" in comparison.columns
     assert "F1" in comparison.columns
     assert "ROC-AUC" in comparison.columns
+
+
+def test_compare_model_metrics_is_sorted_by_f1() -> None:
+    dataframe = make_evaluation_dataframe()
+    results = compare_models(dataframe)
+
+    comparison = compare_model_metrics(results)
+    f1_scores = comparison["F1"].tolist()
+
+    assert f1_scores == sorted(f1_scores, reverse=True)
 
 
 def test_save_confusion_matrix_creates_file(

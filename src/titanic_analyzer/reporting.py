@@ -1,4 +1,4 @@
-"""Report generation utilities for Titanic analysis results."""
+"""Generate reports from Titanic analysis results."""
 
 import json
 from pathlib import Path
@@ -13,7 +13,7 @@ from titanic_analyzer.models import ModelResult
 def ensure_output_directory(
     output_directory: str | Path,
 ) -> Path:
-    """Create and return the report output directory."""
+    """Create the output directory if needed."""
     path = Path(output_directory)
     path.mkdir(parents=True, exist_ok=True)
 
@@ -24,7 +24,7 @@ def save_analysis_report(
     dataframe: pd.DataFrame,
     output_path: str | Path,
 ) -> Path:
-    """Save a human-readable Titanic analysis report."""
+    """Save the analysis results as a text file."""
     path = Path(output_path)
     path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -94,7 +94,7 @@ def save_model_comparison_csv(
     model_results: dict[str, ModelResult],
     output_path: str | Path,
 ) -> Path:
-    """Save model evaluation metrics as a CSV file."""
+    """Save model metrics as a CSV file."""
     path = Path(output_path)
     path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -112,7 +112,7 @@ def save_model_results_json(
     model_results: dict[str, ModelResult],
     output_path: str | Path,
 ) -> Path:
-    """Save model evaluation results as JSON."""
+    """Save model results as a JSON file."""
     path = Path(output_path)
     path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -150,10 +150,10 @@ def generate_reports(
     model_results: dict[str, ModelResult],
     output_directory: str | Path = "outputs/reports",
 ) -> list[Path]:
-    """Generate all standard Titanic report files."""
+    """Generate the report files."""
     output_directory = ensure_output_directory(output_directory)
 
-    report_paths = [
+    paths = [
         save_analysis_report(
             dataframe,
             output_directory / "analysis_report.txt",
@@ -168,4 +168,4 @@ def generate_reports(
         ),
     ]
 
-    return report_paths
+    return paths

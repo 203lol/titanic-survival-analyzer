@@ -1,6 +1,7 @@
 """Tests for Titanic machine-learning models."""
 
 import pandas as pd
+import pytest
 
 from titanic_analyzer.models import (
     build_decision_tree_pipeline,
@@ -192,14 +193,14 @@ def test_logistic_pipeline_contains_expected_steps() -> None:
     assert "model" in pipeline.named_steps
 
 
-def test_decision_tree_pipeline_contains_model() -> None:
+def test_decision_tree_pipeline_contains_expected_steps() -> None:
     pipeline = build_decision_tree_pipeline()
 
     assert "preprocessor" in pipeline.named_steps
     assert "model" in pipeline.named_steps
 
 
-def test_random_forest_pipeline_contains_model() -> None:
+def test_random_forest_pipeline_contains_expected_steps() -> None:
     pipeline = build_random_forest_pipeline()
 
     assert "preprocessor" in pipeline.named_steps
@@ -276,9 +277,8 @@ def test_compare_models_returns_valid_accuracies() -> None:
 def test_missing_model_column_raises_error() -> None:
     dataframe = make_model_dataframe().drop(columns=["Title"])
 
-    try:
+    with pytest.raises(
+        ValueError,
+        match="Title",
+    ):
         prepare_model_data(dataframe)
-    except ValueError as error:
-        assert "Title" in str(error)
-    else:
-        raise AssertionError("Expected ValueError")

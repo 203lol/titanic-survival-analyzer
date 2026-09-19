@@ -29,9 +29,7 @@ def make_visualization_dataframe() -> pd.DataFrame:
     )
 
 
-def test_plot_survival_by_sex_creates_file(
-    tmp_path: Path,
-) -> None:
+def test_plot_survival_by_sex_creates_file(tmp_path: Path) -> None:
     dataframe = make_visualization_dataframe()
     output = tmp_path / "survival_by_sex.png"
 
@@ -41,9 +39,7 @@ def test_plot_survival_by_sex_creates_file(
     assert result.stat().st_size > 0
 
 
-def test_plot_survival_by_class_creates_file(
-    tmp_path: Path,
-) -> None:
+def test_plot_survival_by_class_creates_file(tmp_path: Path) -> None:
     dataframe = make_visualization_dataframe()
     output = tmp_path / "survival_by_class.png"
 
@@ -53,9 +49,7 @@ def test_plot_survival_by_class_creates_file(
     assert result.stat().st_size > 0
 
 
-def test_plot_age_distribution_creates_file(
-    tmp_path: Path,
-) -> None:
+def test_plot_age_distribution_creates_file(tmp_path: Path) -> None:
     dataframe = make_visualization_dataframe()
     output = tmp_path / "age_distribution.png"
 
@@ -65,9 +59,7 @@ def test_plot_age_distribution_creates_file(
     assert result.stat().st_size > 0
 
 
-def test_plot_fare_distribution_creates_file(
-    tmp_path: Path,
-) -> None:
+def test_plot_fare_distribution_creates_file(tmp_path: Path) -> None:
     dataframe = make_visualization_dataframe()
     output = tmp_path / "fare_distribution.png"
 
@@ -77,9 +69,7 @@ def test_plot_fare_distribution_creates_file(
     assert result.stat().st_size > 0
 
 
-def test_plot_survival_by_family_size_creates_file(
-    tmp_path: Path,
-) -> None:
+def test_plot_survival_by_family_size_creates_file(tmp_path: Path) -> None:
     dataframe = make_visualization_dataframe()
     output = tmp_path / "family_size.png"
 
@@ -89,9 +79,7 @@ def test_plot_survival_by_family_size_creates_file(
     assert result.stat().st_size > 0
 
 
-def test_family_size_plot_requires_feature(
-    tmp_path: Path,
-) -> None:
+def test_family_size_plot_requires_feature(tmp_path: Path) -> None:
     dataframe = make_visualization_dataframe().drop(columns=["FamilySize"])
 
     with pytest.raises(ValueError, match="FamilySize"):
@@ -101,9 +89,7 @@ def test_family_size_plot_requires_feature(
         )
 
 
-def test_generate_all_plots_creates_five_files(
-    tmp_path: Path,
-) -> None:
+def test_generate_all_plots_creates_five_files(tmp_path: Path) -> None:
     dataframe = make_visualization_dataframe()
 
     paths = generate_all_plots(dataframe, tmp_path)
