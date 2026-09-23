@@ -52,10 +52,7 @@ def plot_survival_by_class(
     path = _prepare_output_path(output_path)
 
     survival_rates = (
-        dataframe.groupby("Pclass")["Survived"]
-        .mean()
-        .mul(100)
-        .sort_index()
+        dataframe.groupby("Pclass")["Survived"].mean().mul(100).sort_index()
     )
 
     fig, ax = plt.subplots()
@@ -143,10 +140,7 @@ def plot_survival_by_family_size(
         )
 
     survival_rates = (
-        dataframe.groupby("FamilySize")["Survived"]
-        .mean()
-        .mul(100)
-        .sort_index()
+        dataframe.groupby("FamilySize")["Survived"].mean().mul(100).sort_index()
     )
 
     fig, ax = plt.subplots()

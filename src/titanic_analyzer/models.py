@@ -46,9 +46,7 @@ def prepare_model_data(
     dataframe: pd.DataFrame,
 ) -> tuple[pd.DataFrame, pd.Series]:
     """Prepare features and target for model training."""
-    required_columns = set(
-        NUMERIC_FEATURES + CATEGORICAL_FEATURES + [TARGET_COLUMN]
-    )
+    required_columns = set(NUMERIC_FEATURES + CATEGORICAL_FEATURES + [TARGET_COLUMN])
 
     missing_columns = required_columns.difference(dataframe.columns)
 

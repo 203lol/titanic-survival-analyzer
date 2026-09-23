@@ -36,20 +36,12 @@ class SurvivalAnalyzer:
 
     def survival_by_class(self) -> pd.Series:
         """Calculate survival rate by passenger class."""
-        return (
-            self.dataframe.groupby("Pclass")["Survived"]
-            .mean()
-            .mul(100)
-            .sort_index()
-        )
+        return self.dataframe.groupby("Pclass")["Survived"].mean().mul(100).sort_index()
 
     def survival_by_embarkation(self) -> pd.Series:
         """Calculate survival rate by embarkation port."""
         return (
-            self.dataframe.groupby("Embarked")["Survived"]
-            .mean()
-            .mul(100)
-            .sort_index()
+            self.dataframe.groupby("Embarked")["Survived"].mean().mul(100).sort_index()
         )
 
     def survival_by_age_group(self) -> pd.Series:

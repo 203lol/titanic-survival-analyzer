@@ -5,7 +5,6 @@ import re
 import numpy as np
 import pandas as pd
 
-
 AGE_BINS = [0, 12, 18, 35, 60, np.inf]
 AGE_LABELS = [
     "Child",
